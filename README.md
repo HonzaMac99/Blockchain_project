@@ -1,14 +1,12 @@
-# My Project
-
-This is our Blockchain project repository. Feel free to clone it and contribute!
+# Blockchain Project
 
 TODO: make a short description
 
 ## 📥 Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone git@github.com:HonzaMac99/Blockchain_project.git
+cd Blockchain_project
 ```
 
 ## 💾 Make Changes and Push
