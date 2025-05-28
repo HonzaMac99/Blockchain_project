@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data Exchange DApp</title>
+</head>
+<body>
+  <h2>Upload Data</h2>
+  <input id="ipfsHash" placeholder="IPFS Hash">
+  <input id="price" placeholder="Price in Wei">
+  <button onclick="listData()">List Data</button>
+
+  <h2>Purchase Data</h2>
+  <input id="dataIdBuy" placeholder="Data ID">
+  <input id="priceBuy" placeholder="Price in Wei">
+  <button onclick="buyData()">Buy</button>
+
+  <h2>Reveal Key</h2>
+  <input id="dataIdKey" placeholder="Data ID">
+  <input id="key" placeholder="Decryption Key">
+  <button onclick="revealKey()">Reveal</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+  <script>
+    const contractAddress = "YOUR_CONTRACT_ADDRESS";
+    const abi = [ /* paste ABI here */ ];
+
+    let provider, signer, contract;
+
+    window.onload = async () => {
+      if (window.ethereum) {
+        await ethereum.request({ method: 'eth_requestAccounts' });
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        contract = new ethers.Contract(contractAddress, abi, signer);
+      } else {
+        alert("Install MetaMask first");
+      }
+    }
+
+    async function listData() {
+      const ipfs = document.getElementById("ipfsHash").value;
+      const price = document.getElementById("price").value;
+      await contract.listData(ipfs, price);
+    }
+
+    async function buyData() {
+      const id = document.getElementById("dataIdBuy").value;
+      const price = document.getElementById("priceBuy").value;
+      await contract.purchaseData(id, { value: price });
+    }
+
+    async function revealKey() {
+      const id = document.getElementById("dataIdKey").value;
+      const key = document.getElementById("key").value;
+      await contract.revealKey(id, key);
+    }
+  </script>
+</body>
+</html>
