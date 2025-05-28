@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hello DApp</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+  <h1>Hello Blockchain</h1>
+
+  <input id="messageInput" placeholder="Enter your message" />
+  <button onclick="setMessage()">Save Message</button>
+  <button onclick="getMessage()">Read Message</button>
+
+  <p><strong>Stored Message:</strong> <span id="storedMessage"></span></p>
+
+  <script>
+    const contractAddress = "0x641ed39fFe504FE688E539980e202c59D5b11cc2";
+    const abi = [
+      "function setMessage(string calldata newMessage) public",
+      "function getMessage() public view returns (string)"
+    ];
+
+    async function getContract() {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      return new ethers.Contract(contractAddress, abi, signer);
+    }
+
+    async function setMessage() {
+      const msg = document.getElementById("messageInput").value;
+      const contract = await getContract();
+      await contract.setMessage(msg);
+    }
+
+    async function getMessage() {
+      const contract = await getContract();
+      const message = await contract.getMessage();
+      document.getElementById("storedMessage").innerText = message;
+    }
+  </script>
+</body>
+</html>
