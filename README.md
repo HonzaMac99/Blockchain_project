@@ -2,6 +2,20 @@
 
 TODO: make a short description
 
+
+## How to run the UI
+
+1. Go to the folder with the project files
+2. type ```cmd``` in the path bar to open command line
+3. run ```python -m http.server 8000``` in cmd
+4. Connect to ```localhost:8000``` in the web browser
+5. If executed correctly, the MetaMask should be able to connect
+
+Note: ChatGPT generates this line wrong, it has to be changed:
+GPT: <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+new: <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+
 ## 📥 Clone the Repository
 
 ```bash

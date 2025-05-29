@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DApp Data Access</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 2em; max-width: 600px; margin: auto; }
+    #main, #resultSection { display: none; margin-top: 2em; }
+    #logoutSection {display: none; margin-bottom: 2em}
+    label { display: block; margin-top: 1em; }
+    button { margin-top: 1em; }
+    pre.ticket {
+      background: #222;
+      color: #0f0;
+      padding: 1em;
+      border: 2px dashed #0f0;
+      text-align: center;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="auth">
+    <h2>Authenticate</h2>
+    <label>Wallet Address (auto-filled by MetaMask)</label>
+    <button onclick="connectWallet()">Connect Wallet</button>
+    <span id="walletStatus"></span>
+    <label for="contract">Smart Contract Address</label>
+    <input id="contract" type="text" placeholder="0x..." />
+    <button onclick="authenticate()">Authenticate</button>
+  </div>
+
+  <div id="main">
+    <h2>Buy Data Access</h2>
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <label for="dataType" style="margin: 0; line-height: 1;">Select Data Type:</label>
+        <select id="dataType" onchange="updatePrice()">
+            <option value="0">Sensor Data</option>
+            <option value="1">Image</option>
+            <option value="2">Video</option>
+        </select>
+    </div>
+    <p id="price">Price: -</p>
+    <div><button onclick="buyAccess()">Buy</button></div>
+  </div>
+
+  <div id="resultSection">
+    <p id="successMsg"></p>
+    <button onclick="revealSecret()">Reveal Access Key</button>
+    <pre id="secretMsg" class="ticket"></pre>
+  </div>
+  
+  <div id="logoutSection">
+    <button onclick="logout()">Logout</button>
+  </div>
+
+<script>
+  let provider, signer, contract;
+
+  const abi = [
+    "function getPrice(uint8 _type) view returns (uint256)",
+    "function buyAccess(uint8 _type) payable",
+    "function getAccessMessage(uint8 _type) view returns (string)",
+  ];
+
+  async function connectWallet() {
+    if (!window.ethereum) return alert("Install MetaMask");
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    signer = provider.getSigner();
+    const address = await signer.getAddress();
+    // document.getElementById("walletStatus").textContent = "Wallet connected";
+    document.getElementById("walletStatus").innerHTML = 
+    `<span style="color: green;">Wallet connected</span> ` +
+    `<span style="color: black;">${address}</span>`;
+  }
+
+  async function authenticate() {
+    const contractAddress = document.getElementById("contract").value;
+    if (!contractAddress) return alert("Please enter a contract address");
+    try {
+      contract = new ethers.Contract(contractAddress, abi, signer);
+      document.getElementById("auth").style.display = "none";
+      document.getElementById("main").style.display = "block";
+      document.getElementById("logoutSection").style.display = "block";
+      updatePrice();
+    } catch (err) {
+      alert("Invalid contract or connection failed");
+    }
+  }
+
+  function logout() {
+    document.getElementById("auth").style.display = "block";
+    document.getElementById("main").style.display = "none";
+    document.getElementById("resultSection").style.display = "none";
+    document.getElementById("logoutSection").style.display = "none";
+    document.getElementById("walletStatus").textContent = "";
+    document.getElementById("secretMsg").textContent = "";
+    document.getElementById("successMsg").textContent = "";
+    document.getElementById("contract").value = "";
+  }
+
+  async function updatePrice() {
+    const type = document.getElementById("dataType").value;
+    const price = await contract.getPrice(type);
+    document.getElementById("price").textContent = `Price: ${ethers.utils.formatEther(price)} ETH`;
+  }
+
+  async function buyAccess() {
+    const type = document.getElementById("dataType").value;
+    const price = await contract.getPrice(type);
+    const tx = await contract.buyAccess(type, { value: price });
+    await tx.wait();
+    document.getElementById("resultSection").style.display = "block";
+    document.getElementById("successMsg").textContent = "Transaction successful!";
+  }
+
+  async function revealSecret() {
+    const type = document.getElementById("dataType").value;
+    const secret = await contract.getAccessMessage(type);
+    document.getElementById("secretMsg").textContent = secret;
+  }
+</script>
+
+</body>
+</html>
