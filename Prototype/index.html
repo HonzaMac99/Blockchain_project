@@ -6,7 +6,7 @@
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <style>
     body { font-family: Arial; padding: 2em; max-width: 600px; margin: auto; }
-    #main, #resultSection { display: none; margin-top: 2em; }
+    #buyerUI, #ownerUI, #resultSection { display: none; margin-top: 2em; }
     #logoutSection {display: none; margin-bottom: 2em}
     label { display: block; margin-top: 1em; }
     button { margin-top: 1em; }
@@ -23,7 +23,7 @@
 </head>
 <body>
 
-  <div id="auth">
+  <div id="authUI">
     <h2>Authenticate</h2>
     <label>Wallet Address (auto-filled by MetaMask)</label>
     <button onclick="connectWallet()">Connect Wallet</button>
@@ -31,9 +31,10 @@
     <label for="contract">Smart Contract Address</label>
     <input id="contract" type="text" placeholder="0x..." />
     <button onclick="authenticate()">Authenticate</button>
+    <span id="authStatus"></span>
   </div>
 
-  <div id="main">
+  <div id="buyerUI">
     <h2>Buy Data Access</h2>
     <div style="display: flex; align-items: center; gap: 8px;">
         <label for="dataType" style="margin: 0; line-height: 1;">Select Data Type:</label>
@@ -45,14 +46,19 @@
     </div>
     <p id="price">Price: -</p>
     <div><button onclick="buyAccess()">Buy</button></div>
-  </div>
-
-  <div id="resultSection">
-    <p id="successMsg"></p>
-    <button onclick="revealSecret()">Reveal Access Key</button>
-    <pre id="secretMsg" class="ticket"></pre>
+    <div id="resultSection">
+        <p id="successMsg"></p>
+        <button onclick="revealSecret()">Reveal Access Key</button>
+        <pre id="secretMsg" class="ticket"></pre>
+    </div>
   </div>
   
+  <div id="ownerUI">
+    <h2>Upload Interface</h2>
+    <input type="file" id="imageUpload" />
+    <button onclick="uploadImage()">Upload</button>
+  </div>
+
   <div id="logoutSection">
     <button onclick="logout()">Logout</button>
   </div>
@@ -64,6 +70,7 @@
     "function getPrice(uint8 _type) view returns (uint256)",
     "function buyAccess(uint8 _type) payable",
     "function getAccessMessage(uint8 _type) view returns (string)",
+    "function getOwner() view returns (address)",
   ];
 
   async function connectWallet() {
@@ -71,30 +78,40 @@
     await window.ethereum.request({ method: 'eth_requestAccounts' });
     provider = new ethers.providers.Web3Provider(window.ethereum);
     signer = provider.getSigner();
-    const address = await signer.getAddress();
-    // document.getElementById("walletStatus").textContent = "Wallet connected";
+    const userAddress = await signer.getAddress();
     document.getElementById("walletStatus").innerHTML = 
     `<span style="color: green;">Wallet connected</span> ` +
-    `<span style="color: black;">${address}</span>`;
+    `<span style="color: black;">${userAddress}</span>`;
   }
 
   async function authenticate() {
     const contractAddress = document.getElementById("contract").value;
     if (!contractAddress) return alert("Please enter a contract address");
-    try {
+    try {      
       contract = new ethers.Contract(contractAddress, abi, signer);
-      document.getElementById("auth").style.display = "none";
-      document.getElementById("main").style.display = "block";
+      const ownerAddress = await contract.getOwner();
+      const userAddress = await signer.getAddress();
+      
+      document.getElementById("authUI").style.display = "none";
+      if (userAddress.toLowerCase() === ownerAddress.toLowerCase()) {
+        document.getElementById("ownerUI").style.display = "block";
+      } else {
+        document.getElementById("buyerUI").style.display = "block";
+      }
       document.getElementById("logoutSection").style.display = "block";
       updatePrice();
+
     } catch (err) {
-      alert("Invalid contract or connection failed");
+      document.getElementById("authStatus").innerHTML = 
+      `<span style="color: red;">Invalid contract or connection failed</span>`;
+      document.getElementById("authUI").style.display = "block";
     }
   }
 
   function logout() {
-    document.getElementById("auth").style.display = "block";
-    document.getElementById("main").style.display = "none";
+    document.getElementById("authUI").style.display = "block";
+    document.getElementById("buyerUI").style.display = "none";
+    document.getElementById("ownerUI").style.display = "none";
     document.getElementById("resultSection").style.display = "none";
     document.getElementById("logoutSection").style.display = "none";
     document.getElementById("walletStatus").textContent = "";
