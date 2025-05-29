@@ -20,17 +20,35 @@ contract MultiDataAccess {
         // Initialize data types with prices and messages
         dataInfo[DataType.Sensor] = DataInfo({
             price: 0.005 ether,
-            accessMessage: "=== Access key to Sensor Data ==="
+            accessMessage:
+                "==============================\n"
+                "|        ACCESS TOKEN        |\n"
+                "|----------------------------|\n"
+                "|    Access key to Sensor    |\n"
+                "|    Keep it confidential!   |\n"
+                "=============================="
         });
 
         dataInfo[DataType.Image] = DataInfo({
             price: 0.01 ether,
-            accessMessage: "=== Access key to Image ==="
+            accessMessage:
+                "==============================\n"
+                "|        ACCESS TOKEN        |\n"
+                "|----------------------------|\n"
+                "|    Access key to Image     |\n"
+                "|    Keep it confidential!   |\n"
+                "=============================="
         });
 
         dataInfo[DataType.Video] = DataInfo({
             price: 0.02 ether,
-            accessMessage: "=== Access key to Video ==="
+            accessMessage:
+                "==============================\n"
+                "|        ACCESS TOKEN        |\n"
+                "|----------------------------|\n"
+                "|    Access key to Video     |\n"
+                "|    Keep it confidential!   |\n"
+                "=============================="
         });
     }
 
