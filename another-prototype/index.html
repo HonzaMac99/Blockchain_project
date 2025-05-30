@@ -184,6 +184,26 @@
             word-break: break-all;
             margin-top: 10px;
         }
+
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .balance-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -209,8 +229,11 @@
             
             <div class="wallet-info">
                 <strong>Connected Wallet:</strong> <span id="walletAddress"></span><br>
-                <strong>Contract:</strong> <span id="connectedContract"></span>
+                <strong>Contract:</strong> <span id="connectedContract"></span><br>
+                <strong>Network:</strong> <span id="networkInfo"></span>
             </div>
+
+            <div id="balanceInfo" class="balance-info hidden"></div>
 
             <div class="marketplace">
                 <h3 style="margin-bottom: 20px;">Available Data Products</h3>
@@ -220,6 +243,8 @@
             <button class="btn" id="purchaseBtn" onclick="purchaseData()" disabled>Select Data to Purchase</button>
             
             <div id="purchaseStatus" class="status hidden"></div>
+            
+            <div id="debugInfo" class="debug-info hidden"></div>
             
             <div id="accessSection" class="hidden">
                 <div class="access-token">
@@ -318,9 +343,10 @@
                     // Initialize contract instance
                     contract = new web3.eth.Contract(contractABI, contractAddr);
                     
-                    // Check network
-                    const networkOk = await checkNetwork();
-                    if (!networkOk) {
+                    // Check network and get info
+                    const networkInfo = await getNetworkInfo();
+                    if (!networkInfo.success) {
+                        showStatus('authStatus', networkInfo.message, 'error');
                         return;
                     }
                     
@@ -333,7 +359,6 @@
                     } catch (contractError) {
                         console.error('Contract test failed:', contractError);
                         showStatus('authStatus', 'Contract connected but may be syncing...', 'info');
-                        // Don't return here, continue with connection
                     }
                     
                     setTimeout(async () => {
@@ -341,6 +366,10 @@
                         document.getElementById('marketplacePage').classList.remove('hidden');
                         document.getElementById('walletAddress').textContent = userAccount.substring(0, 6) + '...' + userAccount.substring(38);
                         document.getElementById('connectedContract').textContent = contractAddr.substring(0, 10) + '...';
+                        document.getElementById('networkInfo').textContent = networkInfo.name;
+                        
+                        // Show balance info
+                        await updateBalanceInfo();
                         
                         // Load products from contract with timeout protection
                         const loadingTimeout = setTimeout(() => {
@@ -363,6 +392,52 @@
                 }
             } else {
                 showStatus('authStatus', 'MetaMask not found. Please install MetaMask extension.', 'error');
+            }
+        }
+
+        // Get network information
+        async function getNetworkInfo() {
+            try {
+                const networkId = await web3.eth.net.getId();
+                console.log('Connected to network ID:', networkId);
+                
+                let networkName;
+                switch (networkId.toString()) {
+                    case '1':
+                        networkName = 'Ethereum Mainnet';
+                        break;
+                    case '11155111':
+                        networkName = 'Sepolia Testnet';
+                        break;
+                    case '80001':
+                        networkName = 'Mumbai Testnet';
+                        break;
+                    case '137':
+                        networkName = 'Polygon Mainnet';
+                        break;
+                    default:
+                        networkName = `Network ID: ${networkId}`;
+                }
+                
+                return { success: true, name: networkName, id: networkId };
+            } catch (error) {
+                console.error('Network check failed:', error);
+                return { success: false, message: 'Failed to detect network' };
+            }
+        }
+
+        // Update balance information
+        async function updateBalanceInfo() {
+            try {
+                const balanceWei = await web3.eth.getBalance(userAccount);
+                const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+                
+                document.getElementById('balanceInfo').innerHTML = `
+                    <strong>Wallet Balance:</strong> ${parseFloat(balanceEth).toFixed(4)} ETH
+                `;
+                document.getElementById('balanceInfo').classList.remove('hidden');
+            } catch (error) {
+                console.error('Failed to get balance:', error);
             }
         }
 
@@ -418,10 +493,10 @@
         // Load fallback products if contract fails
         function loadFallbackProducts() {
             const fallbackProducts = [
-                {id: 1, name: "IoT Sensor Data Package", description: "Real-time temperature, humidity, and air quality data", price: "0.01"},
-                {id: 2, name: "Weather Analytics Dataset", description: "Historical weather patterns and forecasting data", price: "0.005"},
-                {id: 3, name: "Traffic Flow Analysis", description: "Real-time traffic data and congestion patterns", price: "0.02"},
-                {id: 4, name: "Financial Market Data", description: "High-frequency trading data and market sentiment", price: "0.05"}
+                {id: 1, name: "IoT Sensor Data Package", description: "Real-time temperature, humidity, and air quality data", price: "0.001"},
+                {id: 2, name: "Weather Analytics Dataset", description: "Historical weather patterns and forecasting data", price: "0.0005"},
+                {id: 3, name: "Traffic Flow Analysis", description: "Real-time traffic data and congestion patterns", price: "0.002"},
+                {id: 4, name: "Financial Market Data", description: "High-frequency trading data and market sentiment", price: "0.005"}
             ];
             
             fallbackProducts.forEach(product => {
@@ -447,24 +522,6 @@
             title.insertAdjacentElement('afterend', productDiv);
         }
 
-        // Add network checking function
-        async function checkNetwork() {
-            try {
-                const networkId = await web3.eth.net.getId();
-                console.log('Connected to network ID:', networkId);
-                
-                // Sepolia testnet = 11155111, Mumbai testnet = 80001, Mainnet = 1
-                if (networkId !== 11155111 && networkId !== 1 && networkId !== 80001) {
-                    showStatus('purchaseStatus', '⚠️ Please switch to Sepolia testnet in MetaMask', 'error');
-                    return false;
-                }
-                return true;
-            } catch (error) {
-                console.error('Network check failed:', error);
-                return false;
-            }
-        }
-
         function selectDataItem(element, productId, price) {
             // Remove selection from all items
             document.querySelectorAll('.data-item').forEach(item => {
@@ -488,29 +545,93 @@
         async function purchaseData() {
             if (!selectedData || !contract) return;
             
+            const debugInfo = {
+                timestamp: new Date().toISOString(),
+                productId: selectedData.productId,
+                price: selectedData.price,
+                userAccount: userAccount
+            };
+            
             try {
-                showStatus('purchaseStatus', 'Checking purchase status...', 'info');
+                showStatus('purchaseStatus', 'Validating transaction...', 'info');
+                showDebugInfo('Starting purchase validation...');
+                
+                // Check current balance
+                const balanceWei = await web3.eth.getBalance(userAccount);
+                const balanceEth = parseFloat(web3.utils.fromWei(balanceWei, 'ether'));
+                const priceEth = parseFloat(selectedData.price);
+                
+                debugInfo.balanceEth = balanceEth;
+                debugInfo.priceEth = priceEth;
+                
+                showDebugInfo(`Balance: ${balanceEth} ETH, Price: ${priceEth} ETH`);
+                
+                if (balanceEth < priceEth + 0.001) { // Adding small buffer for gas
+                    showStatus('purchaseStatus', `Insufficient balance. Need: ${(priceEth + 0.001).toFixed(4)} ETH, Have: ${balanceEth.toFixed(4)} ETH`, 'error');
+                    return;
+                }
                 
                 // Check if user already purchased this data
+                showDebugInfo('Checking purchase status...');
                 const alreadyPurchased = await contract.methods.checkPurchaseStatus(userAccount, selectedData.productId).call();
+                
+                debugInfo.alreadyPurchased = alreadyPurchased;
                 
                 if (alreadyPurchased) {
                     showStatus('purchaseStatus', 'You have already purchased this data!', 'error');
                     return;
                 }
                 
-                showStatus('purchaseStatus', 'Initiating blockchain transaction...', 'info');
+                showStatus('purchaseStatus', 'Estimating gas...', 'info');
                 
                 const priceInWei = web3.utils.toWei(selectedData.price.toString(), 'ether');
+                debugInfo.priceInWei = priceInWei;
+                
+                // Estimate gas first
+                let gasEstimate;
+                try {
+                    gasEstimate = await contract.methods.purchaseData(selectedData.productId).estimateGas({
+                        from: userAccount,
+                        value: priceInWei
+                    });
+                    
+                    debugInfo.gasEstimate = gasEstimate;
+                    showDebugInfo(`Gas estimate: ${gasEstimate}`);
+                } catch (gasError) {
+                    console.error('Gas estimation failed:', gasError);
+                    debugInfo.gasError = gasError.message;
+                    showDebugInfo(`Gas estimation failed: ${gasError.message}`);
+                    
+                    // Try with a manual gas limit
+                    gasEstimate = 300000;
+                    showDebugInfo('Using manual gas limit: 300000');
+                }
+                
+                showStatus('purchaseStatus', 'Initiating blockchain transaction...', 'info');
+                showDebugInfo('Sending transaction...');
+                
+                // Get current gas price
+                const gasPrice = await web3.eth.getGasPrice();
+                debugInfo.gasPrice = gasPrice;
                 
                 // Call the smart contract purchaseData function
-                const result = await contract.methods.purchaseData(selectedData.productId).send({
+                const txParams = {
                     from: userAccount,
                     value: priceInWei,
-                    gas: 300000 // Gas limit
-                });
+                    gas: Math.ceil(gasEstimate * 1.2), // Add 20% buffer
+                    gasPrice: gasPrice
+                };
+                
+                debugInfo.txParams = txParams;
+                showDebugInfo(`Transaction params: ${JSON.stringify(txParams, null, 2)}`);
+                
+                const result = await contract.methods.purchaseData(selectedData.productId).send(txParams);
+                
+                debugInfo.txHash = result.transactionHash;
+                debugInfo.success = true;
                 
                 showStatus('purchaseStatus', '✅ Transaction successful! Data purchased.', 'success');
+                showDebugInfo(`Transaction successful: ${result.transactionHash}`);
                 
                 // Listen for the AccessTokenGenerated event to get the token
                 const events = await contract.getPastEvents('AccessTokenGenerated', {
@@ -528,19 +649,45 @@
                     displayAccessToken(token);
                 }
                 
+                // Update balance after purchase
+                await updateBalanceInfo();
+                
             } catch (error) {
                 console.error('Purchase error:', error);
+                debugInfo.error = {
+                    message: error.message,
+                    code: error.code,
+                    data: error.data
+                };
+                
+                showDebugInfo(`Error: ${JSON.stringify(debugInfo.error, null, 2)}`);
+                
+                let errorMessage = 'Transaction failed';
                 
                 if (error.code === 4001) {
-                    showStatus('purchaseStatus', 'Transaction cancelled by user', 'error');
+                    errorMessage = 'Transaction cancelled by user';
                 } else if (error.message.includes('insufficient funds')) {
-                    showStatus('purchaseStatus', 'Insufficient funds for transaction', 'error');
+                    errorMessage = 'Insufficient funds for transaction + gas fees';
                 } else if (error.message.includes('Already purchased')) {
-                    showStatus('purchaseStatus', 'You have already purchased this data', 'error');
-                } else {
-                    showStatus('purchaseStatus', 'Transaction failed: ' + error.message, 'error');
+                    errorMessage = 'You have already purchased this data';
+                } else if (error.message.includes('reverted')) {
+                    errorMessage = 'Transaction reverted - check contract conditions';
+                } else if (error.data && error.data.message) {
+                    errorMessage = error.data.message;
                 }
+                
+                showStatus('purchaseStatus', errorMessage, 'error');
+            } finally {
+                // Always show debug info
+                showDebugInfo(`Debug info: ${JSON.stringify(debugInfo, null, 2)}`);
             }
+        }
+
+        function showDebugInfo(message) {
+            const debugElement = document.getElementById('debugInfo');
+            debugElement.textContent += message + '\n';
+            debugElement.classList.remove('hidden');
+            debugElement.scrollTop = debugElement.scrollHeight;
         }
 
         function displayAccessToken(token) {
@@ -584,8 +731,14 @@
                     userAccount = accounts[0];
                     if (document.getElementById('walletAddress')) {
                         document.getElementById('walletAddress').textContent = userAccount.substring(0, 6) + '...' + userAccount.substring(38);
+                        updateBalanceInfo();
                     }
                 }
+            });
+
+            window.ethereum.on('chainChanged', function (chainId) {
+                // Reload when network changes
+                location.reload();
             });
         }
     </script>
