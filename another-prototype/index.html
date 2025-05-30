@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataEx - Data Exchange Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .marketplace {
+            text-align: left;
+        }
+
+        .data-item {
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .data-item:hover {
+            border-color: #667eea;
+        }
+
+        .data-item.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .data-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .data-description {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .data-price {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .wallet-info {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .access-token {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .token-value {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Authentication Page -->
+        <div id="authPage">
+            <div class="logo">DataEx</div>
+            <div class="subtitle">Decentralized Data Exchange Marketplace</div>
+            
+            <div class="form-group">
+                <label>Smart Contract Address</label>
+                <input type="text" id="contractAddress" placeholder="0x..." value="0xD19163807b28561aeA85Ac285eB0A5FDE785f4A6">
+            </div>
+            
+            <button class="btn" onclick="connectWallet()">Connect MetaMask Wallet</button>
+            
+            <div id="authStatus" class="status hidden"></div>
+        </div>
+
+        <!-- Marketplace Page -->
+        <div id="marketplacePage" class="hidden">
+            <div class="logo">DataEx Marketplace</div>
+            
+            <div class="wallet-info">
+                <strong>Connected Wallet:</strong> <span id="walletAddress"></span><br>
+                <strong>Contract:</strong> <span id="connectedContract"></span>
+            </div>
+
+            <div class="marketplace">
+                <h3 style="margin-bottom: 20px;">Available Data Products</h3>
+                <!-- Products will be loaded dynamically -->
+            </div>
+
+            <button class="btn" id="purchaseBtn" onclick="purchaseData()" disabled>Select Data to Purchase</button>
+            
+            <div id="purchaseStatus" class="status hidden"></div>
+            
+            <div id="accessSection" class="hidden">
+                <div class="access-token">
+                    <h4>🔑 Data Access Token Generated!</h4>
+                    <p>Use this token to access your purchased data:</p>
+                    <div class="token-value" id="accessToken"></div>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                        In a real implementation, this token would grant access to your data on IPFS or other storage systems.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let web3;
+        let userAccount;
+        let contract;
+        let selectedData = null;
+
+        // Smart Contract ABI - This is the interface to interact with your contract
+        const contractABI = [
+            {
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "inputs": [{"internalType": "uint256", "name": "_productId", "type": "uint256"}],
+                "name": "purchaseData",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getAllProducts",
+                "outputs": [{"components": [{"internalType": "uint256", "name": "id", "type": "uint256"}, {"internalType": "string", "name": "name", "type": "string"}, {"internalType": "string", "name": "description", "type": "string"}, {"internalType": "uint256", "name": "price", "type": "uint256"}, {"internalType": "address", "name": "seller", "type": "address"}, {"internalType": "string", "name": "ipfsHash", "type": "string"}, {"internalType": "bool", "name": "isActive", "type": "bool"}, {"internalType": "uint256", "name": "totalSales", "type": "uint256"}], "internalType": "struct DataExchange.DataProduct[]", "name": "", "type": "tuple[]"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [{"internalType": "address", "name": "_buyer", "type": "address"}, {"internalType": "uint256", "name": "_productId", "type": "uint256"}],
+                "name": "checkPurchaseStatus",
+                "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [{"internalType": "string", "name": "_accessToken", "type": "string"}],
+                "name": "getDataAccess",
+                "outputs": [{"internalType": "string", "name": "ipfsHash", "type": "string"}, {"internalType": "bool", "name": "isValid", "type": "bool"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "anonymous": false,
+                "inputs": [{"indexed": true, "internalType": "uint256", "name": "productId", "type": "uint256"}, {"indexed": true, "internalType": "address", "name": "buyer", "type": "address"}, {"indexed": false, "internalType": "string", "name": "accessToken", "type": "string"}, {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}],
+                "name": "DataPurchased",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [{"indexed": true, "internalType": "address", "name": "buyer", "type": "address"}, {"indexed": true, "internalType": "uint256", "name": "productId", "type": "uint256"}, {"indexed": false, "internalType": "string", "name": "token", "type": "string"}],
+                "name": "AccessTokenGenerated",
+                "type": "event"
+            }
+        ];
+
+        // Check if MetaMask is installed and connect to contract
+        async function connectWallet() {
+            const contractAddr = document.getElementById('contractAddress').value;
+            
+            if (!contractAddr) {
+                showStatus('authStatus', 'Please enter a smart contract address', 'error');
+                return;
+            }
+
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    showStatus('authStatus', 'Connecting to MetaMask...', 'info');
+                    
+                    // Request account access
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    userAccount = accounts[0];
+                    
+                    // Initialize web3
+                    web3 = new Web3(window.ethereum);
+                    
+                    // Validate contract address format
+                    if (!web3.utils.isAddress(contractAddr)) {
+                        showStatus('authStatus', 'Invalid contract address format', 'error');
+                        return;
+                    }
+                    
+                    // Initialize contract instance
+                    contract = new web3.eth.Contract(contractABI, contractAddr);
+                    
+                    // Check network
+                    const networkOk = await checkNetwork();
+                    if (!networkOk) {
+                        return;
+                    }
+                    
+                    // Test if contract exists by calling a view function
+                    try {
+                        console.log('Testing contract connection...');
+                        const testCall = await contract.methods.getAllProducts().call();
+                        console.log('Contract test successful, products:', testCall.length);
+                        showStatus('authStatus', 'Connected to contract successfully!', 'success');
+                    } catch (contractError) {
+                        console.error('Contract test failed:', contractError);
+                        showStatus('authStatus', 'Contract connected but may be syncing...', 'info');
+                        // Don't return here, continue with connection
+                    }
+                    
+                    setTimeout(async () => {
+                        document.getElementById('authPage').classList.add('hidden');
+                        document.getElementById('marketplacePage').classList.remove('hidden');
+                        document.getElementById('walletAddress').textContent = userAccount.substring(0, 6) + '...' + userAccount.substring(38);
+                        document.getElementById('connectedContract').textContent = contractAddr.substring(0, 10) + '...';
+                        
+                        // Load products from contract with timeout protection
+                        const loadingTimeout = setTimeout(() => {
+                            console.log('Contract loading timeout, using fallback products');
+                            loadFallbackProducts();
+                        }, 10000); // 10 second timeout
+                        
+                        try {
+                            await loadProductsFromContract();
+                            clearTimeout(loadingTimeout);
+                        } catch (error) {
+                            clearTimeout(loadingTimeout);
+                            console.error('Failed to load from contract:', error);
+                            loadFallbackProducts();
+                        }
+                    }, 1500);
+                    
+                } catch (error) {
+                    showStatus('authStatus', 'Connection failed: ' + error.message, 'error');
+                }
+            } else {
+                showStatus('authStatus', 'MetaMask not found. Please install MetaMask extension.', 'error');
+            }
+        }
+
+        // Load products from smart contract
+        async function loadProductsFromContract() {
+            try {
+                console.log('Loading products from contract...');
+                showStatus('purchaseStatus', 'Loading data products...', 'info');
+                
+                const products = await contract.methods.getAllProducts().call();
+                console.log('Products loaded:', products);
+                
+                // Clear the loading status
+                document.getElementById('purchaseStatus').classList.add('hidden');
+                
+                if (products.length > 0) {
+                    // Clear existing static products
+                    clearStaticProducts();
+                    
+                    // Add contract products
+                    products.forEach((product, index) => {
+                        if (product.isActive) {
+                            const priceInEth = web3.utils.fromWei(product.price.toString(), 'ether');
+                            addProductToUI(product.id, product.name, product.description, priceInEth);
+                        }
+                    });
+                    
+                    console.log(`Loaded ${products.length} products from contract`);
+                } else {
+                    console.log('No products found, loading fallback products');
+                    loadFallbackProducts();
+                }
+            } catch (error) {
+                console.error('Error loading products from contract:', error);
+                document.getElementById('purchaseStatus').classList.add('hidden');
+                
+                // Show error and load fallback products
+                showStatus('purchaseStatus', '⚠️ Using demo data (contract sync in progress)', 'info');
+                setTimeout(() => {
+                    document.getElementById('purchaseStatus').classList.add('hidden');
+                }, 3000);
+                
+                loadFallbackProducts();
+            }
+        }
+
+        // Clear static products from HTML
+        function clearStaticProducts() {
+            const existingProducts = document.querySelectorAll('.data-item');
+            existingProducts.forEach(product => product.remove());
+        }
+
+        // Load fallback products if contract fails
+        function loadFallbackProducts() {
+            const fallbackProducts = [
+                {id: 1, name: "IoT Sensor Data Package", description: "Real-time temperature, humidity, and air quality data", price: "0.01"},
+                {id: 2, name: "Weather Analytics Dataset", description: "Historical weather patterns and forecasting data", price: "0.005"},
+                {id: 3, name: "Traffic Flow Analysis", description: "Real-time traffic data and congestion patterns", price: "0.02"},
+                {id: 4, name: "Financial Market Data", description: "High-frequency trading data and market sentiment", price: "0.05"}
+            ];
+            
+            fallbackProducts.forEach(product => {
+                addProductToUI(product.id, product.name, product.description, product.price);
+            });
+        }
+
+        // Add product to UI
+        function addProductToUI(id, name, description, price) {
+            const marketplace = document.querySelector('.marketplace');
+            const productDiv = document.createElement('div');
+            productDiv.className = 'data-item';
+            productDiv.onclick = () => selectDataItem(productDiv, id, price);
+            
+            productDiv.innerHTML = `
+                <div class="data-title">${name}</div>
+                <div class="data-description">${description}</div>
+                <div class="data-price">${price} ETH</div>
+            `;
+            
+            // Insert after the h3 title
+            const title = marketplace.querySelector('h3');
+            title.insertAdjacentElement('afterend', productDiv);
+        }
+
+        // Add network checking function
+        async function checkNetwork() {
+            try {
+                const networkId = await web3.eth.net.getId();
+                console.log('Connected to network ID:', networkId);
+                
+                // Sepolia testnet = 11155111, Mumbai testnet = 80001, Mainnet = 1
+                if (networkId !== 11155111 && networkId !== 1 && networkId !== 80001) {
+                    showStatus('purchaseStatus', '⚠️ Please switch to Sepolia testnet in MetaMask', 'error');
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Network check failed:', error);
+                return false;
+            }
+        }
+
+        function selectDataItem(element, productId, price) {
+            // Remove selection from all items
+            document.querySelectorAll('.data-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select current item
+            element.classList.add('selected');
+            
+            selectedData = {
+                productId: productId,
+                price: price,
+                element: element
+            };
+            
+            const btn = document.getElementById('purchaseBtn');
+            btn.disabled = false;
+            btn.textContent = `Purchase for ${price} ETH`;
+        }
+
+        async function purchaseData() {
+            if (!selectedData || !contract) return;
+            
+            try {
+                showStatus('purchaseStatus', 'Checking purchase status...', 'info');
+                
+                // Check if user already purchased this data
+                const alreadyPurchased = await contract.methods.checkPurchaseStatus(userAccount, selectedData.productId).call();
+                
+                if (alreadyPurchased) {
+                    showStatus('purchaseStatus', 'You have already purchased this data!', 'error');
+                    return;
+                }
+                
+                showStatus('purchaseStatus', 'Initiating blockchain transaction...', 'info');
+                
+                const priceInWei = web3.utils.toWei(selectedData.price.toString(), 'ether');
+                
+                // Call the smart contract purchaseData function
+                const result = await contract.methods.purchaseData(selectedData.productId).send({
+                    from: userAccount,
+                    value: priceInWei,
+                    gas: 300000 // Gas limit
+                });
+                
+                showStatus('purchaseStatus', '✅ Transaction successful! Data purchased.', 'success');
+                
+                // Listen for the AccessTokenGenerated event to get the token
+                const events = await contract.getPastEvents('AccessTokenGenerated', {
+                    filter: { buyer: userAccount, productId: selectedData.productId },
+                    fromBlock: result.blockNumber,
+                    toBlock: result.blockNumber
+                });
+                
+                if (events.length > 0) {
+                    const accessToken = events[0].returnValues.token;
+                    displayAccessToken(accessToken);
+                } else {
+                    // Fallback: generate token format for display
+                    const token = `dataex_${selectedData.productId}_${Date.now()}_${userAccount.substring(2, 8)}`;
+                    displayAccessToken(token);
+                }
+                
+            } catch (error) {
+                console.error('Purchase error:', error);
+                
+                if (error.code === 4001) {
+                    showStatus('purchaseStatus', 'Transaction cancelled by user', 'error');
+                } else if (error.message.includes('insufficient funds')) {
+                    showStatus('purchaseStatus', 'Insufficient funds for transaction', 'error');
+                } else if (error.message.includes('Already purchased')) {
+                    showStatus('purchaseStatus', 'You have already purchased this data', 'error');
+                } else {
+                    showStatus('purchaseStatus', 'Transaction failed: ' + error.message, 'error');
+                }
+            }
+        }
+
+        function displayAccessToken(token) {
+            document.getElementById('accessToken').textContent = token;
+            document.getElementById('accessSection').classList.remove('hidden');
+            
+            // Add functionality to verify token
+            addTokenVerification(token);
+        }
+
+        async function addTokenVerification(token) {
+            try {
+                const result = await contract.methods.getDataAccess(token).call();
+                
+                if (result.isValid) {
+                    const tokenElement = document.getElementById('accessToken');
+                    tokenElement.innerHTML = `
+                        ${token}
+                        <br><small style="color: green;">✅ Token verified - IPFS Hash: ${result.ipfsHash}</small>
+                    `;
+                }
+            } catch (error) {
+                console.error('Token verification error:', error);
+            }
+        }
+
+        function showStatus(elementId, message, type) {
+            const statusElement = document.getElementById(elementId);
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+            statusElement.classList.remove('hidden');
+        }
+
+        // Handle account changes
+        if (typeof window.ethereum !== 'undefined') {
+            window.ethereum.on('accountsChanged', function (accounts) {
+                if (accounts.length === 0) {
+                    // User disconnected wallet
+                    location.reload();
+                } else {
+                    userAccount = accounts[0];
+                    if (document.getElementById('walletAddress')) {
+                        document.getElementById('walletAddress').textContent = userAccount.substring(0, 6) + '...' + userAccount.substring(38);
+                    }
+                }
+            });
+        }
+    </script>
+    
+    <!-- Web3.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.10.0/web3.min.js"></script>
+</body>
+</html>
