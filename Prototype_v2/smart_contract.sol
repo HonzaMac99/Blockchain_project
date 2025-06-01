@@ -212,7 +212,9 @@ contract DataExchange {
         // filter only active products
         for (uint256 i = 1; i <= tokenCounter; i++) {
             if (dataProducts[i].isActive) {
-                activeProducts[activeCount] = dataProducts[i];
+                DataProduct memory activeProduct = dataProducts[i];
+                activeProduct.ipfsHash = "";  // adding some security
+                activeProducts[activeCount] = activeProduct;
                 activeCount++;
             }
         }
