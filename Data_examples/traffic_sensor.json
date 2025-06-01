@@ -1,0 +1,245 @@
+{
+  "// Simple traffic count": "",
+  "simple_traffic": {
+    "sensor_id": "TRAFFIC_001",
+    "timestamp": "2024-06-01T14:30:00Z",
+    "location": "Highway A1 - KM 25",
+    "vehicle_count": 45,
+    "average_speed": 65.5,
+    "time_period": "1_minute"
+  },
+
+  "// Detailed traffic monitoring": "",
+  "detailed_traffic": {
+    "sensor": {
+      "id": "TRAFFIC_HWY_A1_025",
+      "name": "Highway A1 Traffic Monitor",
+      "type": "Inductive Loop + Camera",
+      "installation_date": "2023-08-15",
+      "coordinates": {
+        "latitude": 49.2827,
+        "longitude": -123.1207
+      }
+    },
+    "location": {
+      "highway": "A1",
+      "direction": "northbound",
+      "lane_count": 3,
+      "kilometer_mark": 25.2,
+      "city": "Vancouver",
+      "weather_station": "WS_001"
+    },
+    "timestamp": "2024-06-01T14:30:00Z",
+    "measurement_period": {
+      "start": "2024-06-01T14:29:00Z",
+      "end": "2024-06-01T14:30:00Z",
+      "duration_seconds": 60
+    },
+    "traffic_data": {
+      "total_vehicles": 47,
+      "average_speed": 68.2,
+      "speed_limit": 80,
+      "lane_breakdown": [
+        {
+          "lane": 1,
+          "vehicle_count": 12,
+          "average_speed": 72.1,
+          "occupancy_percentage": 15.2
+        },
+        {
+          "lane": 2,
+          "vehicle_count": 20,
+          "average_speed": 67.8,
+          "occupancy_percentage": 22.5
+        },
+        {
+          "lane": 3,
+          "vehicle_count": 15,
+          "average_speed": 65.3,
+          "occupancy_percentage": 18.7
+        }
+      ],
+      "vehicle_classification": {
+        "passenger_cars": 35,
+        "motorcycles": 3,
+        "light_trucks": 6,
+        "heavy_trucks": 2,
+        "buses": 1
+      },
+      "speed_distribution": {
+        "under_50": 2,
+        "50_to_70": 28,
+        "70_to_90": 15,
+        "over_90": 2
+      }
+    },
+    "environmental_conditions": {
+      "visibility": "clear",
+      "road_condition": "dry",
+      "temperature": 18.5,
+      "precipitation": 0.0
+    },
+    "quality_metrics": {
+      "data_completeness": 98.5,
+      "sensor_health": "excellent",
+      "calibration_accuracy": 99.2
+    }
+  },
+
+  "// Urban intersection monitoring": "",
+  "intersection_traffic": {
+    "intersection_id": "INT_MAIN_ELM_001",
+    "location": {
+      "street_1": "Main Street",
+      "street_2": "Elm Avenue",
+      "city": "Downtown",
+      "coordinates": {
+        "latitude": 40.7589,
+        "longitude": -73.9851
+      }
+    },
+    "timestamp": "2024-06-01T14:30:00Z",
+    "signal_phase": {
+      "current_phase": "green_main",
+      "time_remaining": 25,
+      "cycle_length": 120
+    },
+    "traffic_flows": [
+      {
+        "approach": "north_main",
+        "movements": {
+          "straight": {
+            "vehicle_count": 8,
+            "queue_length": 3,
+            "average_speed": 25.2
+          },
+          "left_turn": {
+            "vehicle_count": 2,
+            "queue_length": 1,
+            "average_speed": 15.5
+          },
+          "right_turn": {
+            "vehicle_count": 5,
+            "queue_length": 0,
+            "average_speed": 20.1
+          }
+        }
+      },
+      {
+        "approach": "south_main",
+        "movements": {
+          "straight": {
+            "vehicle_count": 12,
+            "queue_length": 5,
+            "average_speed": 22.8
+          },
+          "left_turn": {
+            "vehicle_count": 3,
+            "queue_length": 2,
+            "average_speed": 12.3
+          },
+          "right_turn": {
+            "vehicle_count": 1,
+            "queue_length": 0,
+            "average_speed": 18.9
+          }
+        }
+      }
+    ],
+    "pedestrian_data": {
+      "crosswalk_main": {
+        "pedestrian_count": 4,
+        "waiting_time": 35
+      },
+      "crosswalk_elm": {
+        "pedestrian_count": 1,
+        "waiting_time": 12
+      }
+    },
+    "performance_metrics": {
+      "level_of_service": "C",
+      "average_delay": 28.5,
+      "throughput_efficiency": 76.2
+    }
+  },
+
+  "// Smart parking sensor": "",
+  "parking_sensor": {
+    "sensor_id": "PARK_001_A12",
+    "parking_lot": {
+      "id": "LOT_DOWNTOWN_001",
+      "name": "Downtown Plaza Parking",
+      "total_spaces": 150,
+      "level": "Ground",
+      "section": "A"
+    },
+    "space": {
+      "number": "A12",
+      "type": "standard",
+      "coordinates": {
+        "x": 12.5,
+        "y": 8.2
+      }
+    },
+    "timestamp": "2024-06-01T14:30:00Z",
+    "occupancy": {
+      "status": "occupied",
+      "confidence": 95.2,
+      "occupied_since": "2024-06-01T13:45:23Z",
+      "duration_minutes": 44
+    },
+    "vehicle_detection": {
+      "length": 4.2,
+      "width": 1.8,
+      "estimated_type": "sedan",
+      "license_plate": "ABC123"
+    },
+    "sensor_status": {
+      "battery_level": 78,
+      "signal_strength": -67,
+      "last_maintenance": "2024-05-20T10:00:00Z"
+    },
+    "lot_summary": {
+      "available_spaces": 23,
+      "occupancy_rate": 84.7,
+      "turnover_rate": 2.3
+    }
+  },
+
+  "// Public transport monitoring": "",
+  "bus_monitoring": {
+    "sensor_id": "BUS_STOP_015",
+    "stop_info": {
+      "stop_id": "BS_MAIN_015",
+      "name": "Main St & 5th Ave",
+      "routes": ["Route 101", "Route 205", "Express 301"]
+    },
+    "timestamp": "2024-06-01T14:30:00Z",
+    "passenger_data": {
+      "waiting_passengers": 8,
+      "boarding_count_last_hour": 24,
+      "alighting_count_last_hour": 18
+    },
+    "bus_arrivals": [
+      {
+        "route": "Route 101",
+        "scheduled_time": "2024-06-01T14:32:00Z",
+        "estimated_arrival": "2024-06-01T14:34:00Z",
+        "delay_minutes": 2,
+        "occupancy_level": "moderate"
+      },
+      {
+        "route": "Route 205",
+        "scheduled_time": "2024-06-01T14:38:00Z",
+        "estimated_arrival": "2024-06-01T14:37:00Z",
+        "delay_minutes": -1,
+        "occupancy_level": "high"
+      }
+    ],
+    "environmental": {
+      "noise_level": 65.2,
+      "air_quality_index": 42,
+      "temperature": 21.5
+    }
+  }
+}

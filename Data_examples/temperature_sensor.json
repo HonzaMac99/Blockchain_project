@@ -1,0 +1,149 @@
+{
+  "// Simple single reading": "",
+  "simple_reading": {
+    "sensor_id": "TEMP_001",
+    "timestamp": "2024-06-01T14:30:00Z",
+    "temperature": 23.5,
+    "humidity": 65.2,
+    "unit": "celsius"
+  },
+
+  "// Detailed sensor reading with metadata": "",
+  "detailed_reading": {
+    "sensor": {
+      "id": "TEMP_OUTDOOR_001",
+      "name": "Garden Temperature Sensor",
+      "type": "DHT22",
+      "firmware_version": "1.2.3"
+    },
+    "location": {
+      "name": "Garden - North Side",
+      "coordinates": {
+        "latitude": 40.7128,
+        "longitude": -74.0060
+      },
+      "altitude": 45.2
+    },
+    "timestamp": "2024-06-01T14:30:00Z",
+    "measurements": {
+      "temperature": {
+        "value": 23.5,
+        "unit": "celsius",
+        "precision": 0.1,
+        "calibration_offset": 0.0
+      },
+      "humidity": {
+        "value": 65.2,
+        "unit": "percent",
+        "precision": 0.1
+      },
+      "heat_index": {
+        "value": 25.1,
+        "unit": "celsius"
+      }
+    },
+    "sensor_status": {
+      "battery_level": 87,
+      "signal_strength": -45,
+      "last_calibration": "2024-05-15T09:00:00Z",
+      "status": "operational"
+    }
+  },
+
+  "// Multiple readings array": "",
+  "batch_readings": {
+    "sensor_id": "TEMP_INDOOR_002",
+    "location": "Living Room",
+    "readings": [
+      {
+        "timestamp": "2024-06-01T14:30:00Z",
+        "temperature": 22.1,
+        "humidity": 45.8
+      },
+      {
+        "timestamp": "2024-06-01T14:35:00Z",
+        "temperature": 22.3,
+        "humidity": 46.1
+      },
+      {
+        "timestamp": "2024-06-01T14:40:00Z",
+        "temperature": 22.5,
+        "humidity": 46.5
+      }
+    ],
+    "summary": {
+      "count": 3,
+      "avg_temperature": 22.3,
+      "min_temperature": 22.1,
+      "max_temperature": 22.5,
+      "temperature_trend": "rising"
+    }
+  },
+
+  "// Industrial temperature monitoring": "",
+  "industrial_reading": {
+    "plant_id": "FACTORY_A",
+    "sensor": {
+      "id": "TEMP_boiler_001",
+      "location": "Boiler Room - Unit 3",
+      "type": "PT100",
+      "range": {
+        "min": -200,
+        "max": 850,
+        "unit": "celsius"
+      }
+    },
+    "timestamp": "2024-06-01T14:30:15.123Z",
+    "temperature": {
+      "value": 185.7,
+      "unit": "celsius",
+      "raw_value": 2.387,
+      "raw_unit": "volts"
+    },
+    "alarms": {
+      "high_temp_warning": {
+        "threshold": 200,
+        "status": "normal"
+      },
+      "critical_temp_alarm": {
+        "threshold": 250,
+        "status": "normal"
+      }
+    },
+    "maintenance": {
+      "last_service": "2024-03-15T08:00:00Z",
+      "next_service": "2024-09-15T08:00:00Z",
+      "calibration_due": "2024-12-01T00:00:00Z"
+    }
+  },
+
+  "// Smart home thermostat data": "",
+  "smart_thermostat": {
+    "device_id": "NEST_LR_001",
+    "home_id": "HOME_12345",
+    "room": "Living Room",
+    "timestamp": "2024-06-01T14:30:00Z",
+    "current_conditions": {
+      "temperature": 23.0,
+      "humidity": 48,
+      "feels_like": 23.5
+    },
+    "settings": {
+      "target_temperature": 24.0,
+      "mode": "heating",
+      "schedule_active": true,
+      "eco_mode": false
+    },
+    "system_status": {
+      "heating_active": true,
+      "cooling_active": false,
+      "fan_running": true,
+      "filter_status": "good"
+    },
+    "energy": {
+      "power_consumption": 2.1,
+      "daily_usage_kwh": 8.4,
+      "efficiency_rating": "A+"
+    }
+  }
+}

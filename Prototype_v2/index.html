@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataEx - Data Exchange Marketplace</title>
+    <title>DataEx - Data Exchange Platform</title>
     <style>
         * {
             margin: 0;
@@ -18,6 +18,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .container {
@@ -25,8 +26,12 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .auth-container {
             max-width: 500px;
-            width: 90%;
             text-align: center;
         }
 
@@ -37,10 +42,19 @@
             margin-bottom: 10px;
         }
 
+        .title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
         .subtitle {
             color: #666;
             margin-bottom: 30px;
             font-size: 1.1rem;
+            text-align: center;
         }
 
         .form-group {
@@ -64,10 +78,10 @@
             transition: border-color 0.3s ease;
         }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+            input:focus, select:focus {
+                outline: none;
+                border-color: #667eea;
+            }
 
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -83,15 +97,36 @@
             margin-top: 10px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+
+            .btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
         }
 
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
+            .upload-btn:hover {
+                transform: translateY(-2px);
+            }
+
+            .upload-btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+            }
 
         .status {
             margin-top: 20px;
@@ -100,28 +135,167 @@
             font-weight: 500;
         }
 
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
+            .status.success {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
 
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+            .status.error {
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
 
-        .status.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
+            .status.info {
+                background: #d1ecf1;
+                color: #0c5460;
+                border: 1px solid #bee5eb;
+            }
 
         .hidden {
             display: none;
         }
 
+        /* IPFS Upload Styles */
+        .upload-section {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+            .upload-section:hover {
+                background-color: #f8f9ff;
+            }
+
+            .upload-section.dragover {
+                background-color: #f0f4ff;
+                border-color: #4338ca;
+            }
+
+        .file-input {
+            display: none;
+        }
+
+        .config-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+            .config-section h3 {
+                margin-top: 0;
+                color: #333;
+            }
+
+        .method-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .method-tab {
+            flex: 1;
+            padding: 10px 15px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+            .method-tab.active {
+                background: #667eea;
+                color: white;
+            }
+
+        .method-content {
+            display: none;
+        }
+
+            .method-content.active {
+                display: block;
+            }
+
+        .result-section {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .hash-display {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            margin: 10px 0;
+            border: 1px solid #dee2e6;
+        }
+
+        .link-btn {
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+            .link-btn:hover {
+                background: #218838;
+            }
+
+        .download-btn {
+            background: #FFB347;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+            .download-btn:hover {
+                background: #FF8500;
+            }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .file-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        /* Marketplace Styles */
         .marketplace {
             text-align: left;
         }
@@ -132,16 +306,17 @@
             padding: 20px;
             margin-bottom: 15px;
             transition: border-color 0.3s ease;
+            cursor: pointer;
         }
 
-        .data-item:hover {
-            border-color: #667eea;
-        }
+            .data-item:hover {
+                border-color: #667eea;
+            }
 
-        .data-item.selected {
-            border-color: #667eea;
-            background: #f8f9ff;
-        }
+            .data-item.selected {
+                border-color: #667eea;
+                background: #f8f9ff;
+            }
 
         .data-title {
             font-weight: 600;
@@ -168,34 +343,6 @@
             font-size: 0.9rem;
         }
 
-        .access-token {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .token-value {
-            font-family: monospace;
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
-            word-break: break-all;
-            margin-top: 10px;
-        }
-
-        .debug-info {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            text-align: left;
-        }
-
         .balance-info {
             background: #e7f3ff;
             border: 1px solid #b3d9ff;
@@ -204,29 +351,184 @@
             margin: 10px 0;
             font-size: 0.9rem;
         }
+
+        .owner-badge {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .logout-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            float: right;
+            margin-bottom: 20px;
+        }
+
+            .logout-btn:hover {
+                background: #545b62;
+            }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Authentication Page -->
-        <div id="authPage">
+        <div id="authPage" class="auth-container">
             <div class="logo">DataEx</div>
-            <div class="subtitle">Decentralized Data Exchange Marketplace</div>
-            
+            <div class="subtitle">Decentralized Data Exchange Platform</div>
+
             <div class="form-group">
                 <label>Smart Contract Address</label>
-                <input type="text" id="contractAddress" placeholder="0x..." value="0xD19163807b28561aeA85Ac285eB0A5FDE785f4A6">
+                <input type="text" 
+                       id="contractAddress" 
+                       placeholder="0x..." 
+                       value="0x741BB0A962fA55827b94Cc39157BAc7aF83A4B8a">
             </div>
-            
+
             <button class="btn" onclick="connectWallet()">Connect MetaMask Wallet</button>
-            
+
             <div id="authStatus" class="status hidden"></div>
         </div>
 
-        <!-- Marketplace Page -->
+        <!-- IPFS Upload Page (For Contract Owners) -->
+        <div id="uploadPage" class="hidden">
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <div class="owner-badge">🔑 Contract Owner - Data Upload Portal</div>
+
+            <div class="title">IPFS File Upload</div>
+            <div class="subtitle">Upload data files to IPFS for marketplace</div>
+
+            <div class="wallet-info">
+                <strong>Connected as Owner:</strong> <span id="ownerAddress"></span><br>
+                <strong>Contract:</strong> <span id="ownerContract"></span><br>
+                <strong>Network:</strong> <span id="ownerNetwork"></span>
+            </div>
+
+            <!-- Method Selection -->
+            <div class="method-tabs">
+                <button class="method-tab active" onclick="switchMethod('pinata')">Pinata API</button>
+                <button class="method-tab" onclick="switchMethod('web3storage')">Web3.Storage</button>
+            </div>
+
+            <!-- Pinata Method -->
+            <div id="pinata-method" class="method-content active">
+                <div class="config-section">
+                    <h3>🌐 Pinata Configuration</h3>
+                    <div class="form-group">
+                        <label>Pinata API Key:</label>
+                        <input type="text" 
+                               id="pinataApiKey" 
+                               placeholder="Enter your Pinata API key" 
+                               value="6bbcb6d07b8cca39d0f4">
+                    </div>
+                    <div class="form-group">
+                        <label>Pinata Secret Key:</label>
+                        <input type="password" 
+                               id="pinataSecretKey" 
+                               placeholder="Enter your Pinata secret key"
+                               value="f07363bdc1710b978a64c9ec6dca9cff70117f21768f1abd9a2f7fa21fead52f">
+                    </div>
+                    <!-- jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI5
+                              YjQ3Y2QyZS0zMmNlLTRhODUtODE5YS1lN2FhZTVjNjUxNzgiLCJlbWFpbCI6ImhvbnphLm1hY
+                              2FsaWtAc2V6bmFtLmN6IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicm
+                              VnaW9ucyI6W3siZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjEsImlkIjoiRlJBMSJ9LHsiZGV
+                              zaXJlZFJlcGxpY2F0aW9uQ291bnQiOjEsImlkIjoiTllDMSJ9XSwidmVyc2lvbiI6MX0sIm1m
+                              YV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZ
+                              SI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6IjZiYmNiNmQwN2I4Y2NhMzlkMGY0Iiwic2
+                              NvcGVkS2V5U2VjcmV0IjoiZjA3MzYzYmRjMTcxMGI5NzhhNjRjOWVjNmRjYTljZmY3MDExN2Y
+                              yMTc2OGYxYWJkOWEyZjdmYTIxZmVhZDUyZiIsImV4cCI6MTc4MDIzOTgwMH0.XAIW6Jn7ROCV
+                              sS-k0aCJ2angkX9j__4ofIw22cwnkzc -->
+                    <small>Get your API keys from <a href="https://pinata.cloud" target="_blank">pinata.cloud</a></small>
+                </div>
+            </div>
+
+            <!-- Web3.Storage Method -->
+            <div id="web3storage-method" class="method-content">
+                <div class="config-section">
+                    <h3>🌐 Web3.Storage Configuration</h3>
+                    <div class="form-group">
+                        <label>Web3.Storage API Token:</label>
+                        <input type="password" id="web3storageToken" placeholder="Enter your Web3.Storage token">
+                    </div>
+                    <small>Get your token from <a href="https://web3.storage" target="_blank">web3.storage</a></small>
+                </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="upload-section" id="uploadSection">
+                <input type="text" id="data-name" placeholder="Enter data name">
+                <input type="text" id="data-description" placeholder="Enter data description">
+                <input type="text" id="data-price" placeholder="Set data price $$">
+                <div>
+                    <h3 style="margin-top: 2rem">📁 Select Data File to Upload</h3>
+                    <p style="margin-bottom: 2rem">Drag and drop a file here, or click to select</p>
+                    <input type="file" id="fileInput" class="file-input" accept="*/*">
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                        Choose File
+                    </button>
+                </div>
+            </div>
+
+            <!-- File Info -->
+            <div id="fileInfo" class="file-info hidden">
+                <strong>Selected File:</strong> <span id="fileName"></span><br>
+                <strong>Size:</strong> <span id="fileSize"></span><br>
+                <strong>Type:</strong> <span id="fileType"></span>
+            </div>
+
+            <!-- Upload Button -->
+            <button id="uploadButton" class="upload-btn" onclick="uploadToIPFS()" disabled style="width: 100%; margin-top: 20px;">
+                Upload to IPFS
+            </button>
+
+            <!-- Progress Bar -->
+            <div id="progressContainer" class="hidden">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div id="progressText" style="text-align: center; margin-top: 5px;">0%</div>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="uploadStatus" class="status hidden"></div>
+
+            <!-- Results -->
+            <div id="resultSection" class="result-section hidden">
+                <h3>✅ Upload Successful!</h3>
+                <div>
+                    <strong>IPFS Hash:</strong>
+                    <div class="hash-display" id="ipfsHash"></div>
+                </div>
+                <div>
+                    <strong>Access Links:</strong><br>
+                    <a id="ipfsLink" class="link-btn" target="_blank">View on IPFS</a>
+                    <a id="gatewayLink" class="link-btn" target="_blank">View on Gateway</a>
+                    <!--<button class="link-btn" onclick="copyHashToClipboard()">Copy Hash</button>-->
+                    <button class="download-btn" onclick="downloadFromIPFS_testing()">Download</button>
+                </div>
+                <div style="margin-top: 15px;">
+                    <small style="color: #666;">
+                        💡 Use this IPFS hash when adding new data products to your smart contract
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marketplace Page (For Regular Users) -->
         <div id="marketplacePage" class="hidden">
+            <button class="logout-btn" onclick="logout()">Logout</button>
             <div class="logo">DataEx Marketplace</div>
-            
+
             <div class="wallet-info">
                 <strong>Connected Wallet:</strong> <span id="walletAddress"></span><br>
                 <strong>Contract:</strong> <span id="connectedContract"></span><br>
@@ -241,19 +543,28 @@
             </div>
 
             <button class="btn" id="purchaseBtn" onclick="purchaseData()" disabled>Select Data to Purchase</button>
-            
+            <button class="btn" id="refreshBtn" onclick="initializeMarketplace()">Refresh</button>
+
             <div id="purchaseStatus" class="status hidden"></div>
-            
-            <div id="debugInfo" class="debug-info hidden"></div>
-            
-            <div id="accessSection" class="hidden">
-                <div class="access-token">
-                    <h4>🔑 Data Access Token Generated!</h4>
-                    <p>Use this token to access your purchased data:</p>
-                    <div class="token-value" id="accessToken"></div>
-                    <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">
-                        In a real implementation, this token would grant access to your data on IPFS or other storage systems.
-                    </p>
+
+            <!--<div id="debugInfo" class="debug-info hidden"></div>-->
+            <div id="accessSection" class="result-section hidden">
+                <h3>✅ Transaction Successful!</h3>
+                <div>
+                    <strong>IPFS Hash:</strong>
+                    <div class="hash-display" id="accessToken"></div>
+                </div>
+                <div>
+                    <strong>Access Links:</strong><br>
+                    <a id="ipfsLink" class="link-btn" target="_blank">View on IPFS</a>
+                    <a id="gatewayLink" class="link-btn" target="_blank">View on Gateway</a>
+                    <!--<button class="link-btn" onclick="copyHashToClipboard()">Copy Hash</button>-->
+                    <button class="download-btn" onclick="downloadFromIPFS()">Download</button>
+                </div>
+                <div style="margin-top: 15px;">
+                    <small style="color: #666;">
+                        For simplicity we send IPFS hash directly, but in real it would be stored off-chain and obtained by an access token - more safe from malicious attacks.
+                    </small>
                 </div>
             </div>
         </div>
@@ -264,13 +575,38 @@
         let userAccount;
         let contract;
         let selectedData = null;
+        let uploadedData = null;
+        let purchasedData = null;
+        let selectedFile = null;
+        let currentMethod = 'pinata';
+        let isOwner = false;
 
-        // Smart Contract ABI - This is the interface to interact with your contract
+        // Smart Contract ABI
         const contractABI = [
             {
                 "inputs": [],
                 "stateMutability": "nonpayable",
                 "type": "constructor"
+            },
+            {
+                "inputs": [],
+                "name": "owner",
+                "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    { "internalType": "string", "name": "_name", "type": "string" },
+                    { "internalType": "string", "name": "_fname", "type": "string" },
+                    { "internalType": "string", "name": "_description", "type": "string" },
+                    { "internalType": "uint256", "name": "_price", "type": "uint256" },
+                    { "internalType": "string", "name": "_ipfsHash", "type": "string" }
+                ],
+                "name": "listDataProduct",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
             },
             {
                 "inputs": [{"internalType": "uint256", "name": "_productId", "type": "uint256"}],
@@ -282,7 +618,20 @@
             {
                 "inputs": [],
                 "name": "getAllProducts",
-                "outputs": [{"components": [{"internalType": "uint256", "name": "id", "type": "uint256"}, {"internalType": "string", "name": "name", "type": "string"}, {"internalType": "string", "name": "description", "type": "string"}, {"internalType": "uint256", "name": "price", "type": "uint256"}, {"internalType": "address", "name": "seller", "type": "address"}, {"internalType": "string", "name": "ipfsHash", "type": "string"}, {"internalType": "bool", "name": "isActive", "type": "bool"}, {"internalType": "uint256", "name": "totalSales", "type": "uint256"}], "internalType": "struct DataExchange.DataProduct[]", "name": "", "type": "tuple[]"}],
+                "outputs": [{
+                    "components": [
+                        { "internalType": "uint256", "name": "id", "type": "uint256" },
+                        { "internalType": "string", "name": "name", "type": "string" },
+                        { "internalType": "string", "name": "filename", "type": "string" },
+                        { "internalType": "string", "name": "description", "type": "string" },
+                        { "internalType": "uint256", "name": "price", "type": "uint256" },
+                        { "internalType": "address", "name": "seller", "type": "address" },
+                        { "internalType": "string", "name": "ipfsHash", "type": "string" },
+                        { "internalType": "bool", "name": "isActive", "type": "bool" },
+                        { "internalType": "uint256", "name": "totalSales", "type": "uint256" }
+                    ],
+                    "internalType": "struct DataExchange.DataProduct[]", "name": "", "type": "tuple[]"
+                }],
                 "stateMutability": "view",
                 "type": "function"
             },
@@ -293,31 +642,71 @@
                 "stateMutability": "view",
                 "type": "function"
             },
+            // {
+            //     "inputs": [{"internalType": "string", "name": "_accessToken", "type": "string"}],
+            //     "name": "getDataAccess",
+            //     "outputs": [{"internalType": "string", "name": "ipfsHash", "type": "string"}, {"internalType": "bool", "name": "isValid", "type": "bool"}],
+            //     "stateMutability": "view",
+            //     "type": "function"
+            // },
             {
-                "inputs": [{"internalType": "string", "name": "_accessToken", "type": "string"}],
-                "name": "getDataAccess",
-                "outputs": [{"internalType": "string", "name": "ipfsHash", "type": "string"}, {"internalType": "bool", "name": "isValid", "type": "bool"}],
-                "stateMutability": "view",
-                "type": "function"
+                "anonymous": false,
+                "inputs": [
+                    { "indexed": true, "internalType": "uint256", "name": "productId", "type": "uint256" },
+                    { "indexed": false, "internalType": "string", "name": "name", "type": "string" },
+                    { "indexed": false, "internalType": "uint256", "name": "price", "type": "uint256" },
+                    { "indexed": false, "internalType": "address", "name": "seller", "type": "address" }
+                ],
+                "name": "DataProductListed",
+                "type": "event"
             },
             {
                 "anonymous": false,
-                "inputs": [{"indexed": true, "internalType": "uint256", "name": "productId", "type": "uint256"}, {"indexed": true, "internalType": "address", "name": "buyer", "type": "address"}, {"indexed": false, "internalType": "string", "name": "accessToken", "type": "string"}, {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}],
+                "inputs": [
+                    { "indexed": true, "internalType": "uint256", "name": "productId", "type": "uint256" },
+                    { "indexed": true, "internalType": "address", "name": "buyer", "type": "address" },
+                    { "indexed": false, "internalType": "string", "name": "accessToken", "type": "string" },
+                    { "indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+                ],
                 "name": "DataPurchased",
                 "type": "event"
             },
             {
                 "anonymous": false,
-                "inputs": [{"indexed": true, "internalType": "address", "name": "buyer", "type": "address"}, {"indexed": true, "internalType": "uint256", "name": "productId", "type": "uint256"}, {"indexed": false, "internalType": "string", "name": "token", "type": "string"}],
+                "inputs": [
+                    { "indexed": true, "internalType": "address", "name": "buyer", "type": "address" },
+                    { "indexed": true, "internalType": "uint256", "name": "productId", "type": "uint256" },
+                    { "indexed": false, "internalType": "string", "name": "productFname", "type": "string" },
+                    { "indexed": false, "internalType": "string", "name": "token", "type": "string" }
+                ],
                 "name": "AccessTokenGenerated",
                 "type": "event"
             }
         ];
 
-        // Check if MetaMask is installed and connect to contract
+        // Check if user is contract owner
+        async function checkOwner() {
+            isOwnerCheck = false;
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            userAccount = accounts[0];
+            try {
+                const contractOwner = await contract.methods.owner().call();
+                isOwnerCheck = contractOwner.toLowerCase() === userAccount.toLowerCase();
+                console.log('Contract Owner:', contractOwner);
+                console.log('User Account:', userAccount);
+                console.log('Is Owner:', isOwner);
+            } catch (ownerError) {
+                console.error('Error checking ownership:', ownerError);
+                // If owner() function doesn't exist, assume not owner
+                isOwnerCheck = false;
+            }
+            return isOwnerCheck;
+        }
+
+        // Connect wallet and check ownership
         async function connectWallet() {
             const contractAddr = document.getElementById('contractAddress').value;
-            
+
             if (!contractAddr) {
                 showStatus('authStatus', 'Please enter a smart contract address', 'error');
                 return;
@@ -326,67 +715,64 @@
             if (typeof window.ethereum !== 'undefined') {
                 try {
                     showStatus('authStatus', 'Connecting to MetaMask...', 'info');
-                    
-                    // Request account access
+
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                     userAccount = accounts[0];
-                    
-                    // Initialize web3
+
                     web3 = new Web3(window.ethereum);
-                    
-                    // Validate contract address format
+
                     if (!web3.utils.isAddress(contractAddr)) {
                         showStatus('authStatus', 'Invalid contract address format', 'error');
                         return;
                     }
-                    
+
                     // Initialize contract instance
                     contract = new web3.eth.Contract(contractABI, contractAddr);
-                    
+
                     // Check network and get info
                     const networkInfo = await getNetworkInfo();
                     if (!networkInfo.success) {
                         showStatus('authStatus', networkInfo.message, 'error');
                         return;
                     }
-                    
-                    // Test if contract exists by calling a view function
+
+                    showStatus('authStatus', 'Checking ownership...', 'info');
+
+                    // Check if user is contract owner
                     try {
-                        console.log('Testing contract connection...');
-                        const testCall = await contract.methods.getAllProducts().call();
-                        console.log('Contract test successful, products:', testCall.length);
-                        showStatus('authStatus', 'Connected to contract successfully!', 'success');
-                    } catch (contractError) {
-                        console.error('Contract test failed:', contractError);
-                        showStatus('authStatus', 'Contract connected but may be syncing...', 'info');
+                        const contractOwner = await contract.methods.owner().call();
+                        isOwner = contractOwner.toLowerCase() === userAccount.toLowerCase();
+                        console.log('Contract Owner:', contractOwner);
+                        console.log('User Account:', userAccount);
+                        console.log('Is Owner:', isOwner);
+                    } catch (ownerError) {
+                        console.error('Error checking ownership:', ownerError);
+                        // If owner() function doesn't exist, assume not owner
+                        isOwner = false;
                     }
-                    
+
+                    showStatus('authStatus', 'Connected successfully!', 'success');
+
                     setTimeout(async () => {
                         document.getElementById('authPage').classList.add('hidden');
-                        document.getElementById('marketplacePage').classList.remove('hidden');
-                        document.getElementById('walletAddress').textContent = userAccount.substring(0, 6) + '...' + userAccount.substring(38);
-                        document.getElementById('connectedContract').textContent = contractAddr.substring(0, 10) + '...';
-                        document.getElementById('networkInfo').textContent = networkInfo.name;
-                        
-                        // Show balance info
-                        await updateBalanceInfo();
-                        
-                        // Load products from contract with timeout protection
-                        const loadingTimeout = setTimeout(() => {
-                            console.log('Contract loading timeout, using fallback products');
-                            loadFallbackProducts();
-                        }, 10000); // 10 second timeout
-                        
-                        try {
-                            await loadProductsFromContract();
-                            clearTimeout(loadingTimeout);
-                        } catch (error) {
-                            clearTimeout(loadingTimeout);
-                            console.error('Failed to load from contract:', error);
-                            loadFallbackProducts();
+
+                        if (isOwner) {
+                            // Show upload page for owner
+                            document.getElementById('uploadPage').classList.remove('hidden');
+                            document.getElementById('ownerAddress').textContent = userAccount.substring(0, 6) + '...' + userAccount.substring(38);
+                            document.getElementById('ownerContract').textContent = contractAddr.substring(0, 10) + '...';
+                            document.getElementById('ownerNetwork').textContent = networkInfo.name;
+                            initializeUploadPage();
+                        } else {
+                            // Show marketplace for regular users
+                            document.getElementById('marketplacePage').classList.remove('hidden');
+                            document.getElementById('walletAddress').textContent = userAccount.substring(0, 6) + '...' + userAccount.substring(38);
+                            document.getElementById('connectedContract').textContent = contractAddr.substring(0, 10) + '...';
+                            document.getElementById('networkInfo').textContent = networkInfo.name;
+                            initializeMarketplace();
                         }
                     }, 1500);
-                    
+
                 } catch (error) {
                     showStatus('authStatus', 'Connection failed: ' + error.message, 'error');
                 }
@@ -395,30 +781,57 @@
             }
         }
 
+        // Initialize upload page functionality
+        function initializeUploadPage() {
+            const uploadSection = document.getElementById('uploadSection');
+            const fileInput = document.getElementById('fileInput');
+
+            // Drag and drop events
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.classList.add('dragover');
+            });
+
+            uploadSection.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadSection.classList.remove('dragover');
+            });
+
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelection(files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelection(e.target.files[0]);
+                }
+            });
+        }
+
+        // Initialize marketplace functionality
+        async function initializeMarketplace() {
+            await updateBalanceInfo();
+            await loadProductsFromContract();
+        }
+
         // Get network information
         async function getNetworkInfo() {
             try {
                 const networkId = await web3.eth.net.getId();
                 console.log('Connected to network ID:', networkId);
-                
                 let networkName;
                 switch (networkId.toString()) {
-                    case '1':
-                        networkName = 'Ethereum Mainnet';
-                        break;
-                    case '11155111':
-                        networkName = 'Sepolia Testnet';
-                        break;
-                    case '80001':
-                        networkName = 'Mumbai Testnet';
-                        break;
-                    case '137':
-                        networkName = 'Polygon Mainnet';
-                        break;
-                    default:
-                        networkName = `Network ID: ${networkId}`;
+                    case '1': networkName = 'Ethereum Mainnet'; break;
+                    case '11155111': networkName = 'Sepolia Testnet'; break;
+                    case '80001': networkName = 'Mumbai Testnet'; break;
+                    case '137': networkName = 'Polygon Mainnet'; break;
+                    default: networkName = `Network ID: ${networkId}`;
                 }
-                
                 return { success: true, name: networkName, id: networkId };
             } catch (error) {
                 console.error('Network check failed:', error);
@@ -426,12 +839,290 @@
             }
         }
 
-        // Update balance information
+        // IPFS Upload Functions
+        function switchMethod(method) {
+            currentMethod = method;
+
+            document.querySelectorAll('.method-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[onclick="switchMethod('${method}')"]`).classList.add('active');
+
+            document.querySelectorAll('.method-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${method}-method`).classList.add('active');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function handleFileSelection(file) {
+            selectedFile = file;
+
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('fileType').textContent = file.type || 'Unknown';
+            document.getElementById('fileInfo').classList.remove('hidden');
+
+            document.getElementById('uploadButton').disabled = false;
+            document.getElementById('resultSection').classList.add('hidden');
+            document.getElementById('uploadStatus').classList.add('hidden');
+        }
+
+        async function uploadToIPFS() {
+            if (!selectedFile) {
+                showUploadStatus('Please select a file first', 'error');
+                return;
+            }
+
+            if (currentMethod === 'pinata') {
+                await uploadToPinata();
+            } else if (currentMethod === 'web3storage') {
+                await uploadToWeb3Storage();
+            }
+        }
+
+        async function uploadToPinata() {
+            const apiKey = document.getElementById('pinataApiKey').value;
+            const secretKey = document.getElementById('pinataSecretKey').value;
+
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            userAccount = accounts[0];
+
+            if (!apiKey || !secretKey) {
+                showUploadStatus('Please enter your Pinata API credentials', 'error');
+                return;
+            }
+
+            try {
+                const contractOwner = await contract.methods.owner().call();
+                isOwner = contractOwner.toLowerCase() === userAccount.toLowerCase();
+                console.log('Contract Owner:', contractOwner);
+                console.log('User Account:', userAccount);
+                console.log('Is Owner:', isOwner);
+            } catch (ownerError) {
+                console.error('Error checking ownership:', ownerError);
+                // If owner() function doesn't exist, assume not owner
+                isOwner = false;
+            }
+
+            if (!isOwner) {
+                showUploadStatus('Please change back to your owner account', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            const metadata = JSON.stringify({
+                name: selectedFile.name,
+                keyvalues: {
+                    uploadedAt: new Date().toISOString(),
+                    originalSize: selectedFile.size,
+                    uploadedBy: userAccount
+                }
+            });
+            formData.append('pinataMetadata', metadata);
+
+            try {
+                showUploadStatus('Uploading to IPFS via Pinata...', 'info');
+                showProgress(0);
+
+                const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+                    method: 'POST',
+                    headers: {
+                        'pinata_api_key': apiKey,
+                        'pinata_secret_api_key': secretKey
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Upload failed');
+                }
+
+                const result = await response.json();
+                showProgress(100);
+                showUploadSuccess(result.IpfsHash, 'Pinata');
+
+                uploadedData = {
+                    ipfsHash: result.IpfsHash,
+                    filename: selectedFile.name
+                }
+
+                // update the smart contract list of available data
+                name = document.getElementById("data-name").value;
+                fname = selectedFile.name;
+                desc = document.getElementById("data-description").value;
+                const price = document.getElementById("data-price").value;
+                const priceInWei = web3.utils.toWei(price.toString(), 'ether');
+                ipfsHash = result.IpfsHash;
+                console.log("Data name:        ", name);
+                console.log("File name:        ", fname);
+                console.log("Data description: ", desc);
+                console.log("Data price:       ", priceInWei);
+                console.log("IPFS hash:        ", ipfsHash);
+                contract.methods.listDataProduct(name, fname, desc, priceInWei, ipfsHash).send({ from: userAccount });
+
+            } catch (error) {
+                console.error('Pinata upload error:', error);
+                showUploadStatus('Upload failed: ' + error.message, 'error');
+                hideProgress();
+            }
+        }
+
+        async function uploadToWeb3Storage() {
+            const token = document.getElementById('web3storageToken').value;
+
+            if (!token) {
+                showUploadStatus('Please enter your Web3.Storage token', 'error');
+                return;
+            }
+
+            try {
+                showUploadStatus('Uploading to IPFS via Web3.Storage...', 'info');
+                showProgress(0);
+
+                const response = await fetch('https://api.web3.storage/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'X-NAME': selectedFile.name
+                    },
+                    body: selectedFile
+                });
+
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${error}`);
+                }
+
+                const result = await response.json();
+                showProgress(100);
+                showUploadSuccess(result.cid, 'Web3.Storage');
+
+            } catch (error) {
+                console.error('Web3.Storage upload error:', error);
+                showUploadStatus('Upload failed: ' + error.message, 'error');
+                hideProgress();
+            }
+        }
+
+        function showUploadSuccess(hash, service) {
+            showUploadStatus(`Successfully uploaded via ${service}!`, 'success');
+
+            document.getElementById('ipfsHash').textContent = hash;
+            document.getElementById('ipfsLink').href = `https://ipfs.io/ipfs/${hash}`;
+            document.getElementById('gatewayLink').href = `https://gateway.pinata.cloud/ipfs/${hash}`;
+            document.getElementById('resultSection').classList.remove('hidden');
+
+            hideProgress();
+        }
+
+        function showUploadStatus(message, type) {
+            const statusElement = document.getElementById('uploadStatus');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+            statusElement.classList.remove('hidden');
+        }
+
+        function showProgress(percent) {
+            document.getElementById('progressContainer').classList.remove('hidden');
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = Math.round(percent) + '%';
+        }
+
+        function hideProgress() {
+            document.getElementById('progressContainer').classList.add('hidden');
+        }
+
+        async function downloadFromIPFS_testing() {
+            if (!uploadedData) return;
+
+            const ipfsHash = uploadedData.ipfsHash;
+            const filename = uploadedData.filename || 'downloaded-file';
+            const gatewayUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
+            console.log("download url: ", gatewayUrl);
+
+            try {
+                const response = await fetch(gatewayUrl);
+                if (!response.ok) throw new Error('Failed to fetch file from IPFS');
+
+                const blob = await response.blob();
+
+                // Create a temporary link to trigger the download
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+
+                // Cleanup
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            } catch (err) {
+                console.error('Download failed:', err);
+                alert('Failed to download the file from IPFS.');
+            }
+        }
+
+        // custom function to download the selected data from ipfs
+        async function downloadFromIPFS() {
+            if (!purchasedData) return;
+
+            const ipfsHash = purchasedData.ipfsHash;
+            const filename = purchasedData.filename || 'downloaded-file';
+            const gatewayUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
+            console.log("download url: ", gatewayUrl);
+
+            try {
+                const response = await fetch(gatewayUrl);
+                if (!response.ok) throw new Error('Failed to fetch file from IPFS');
+
+                const blob = await response.blob();
+
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+
+                // Cleanup
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            } catch (err) {
+                console.error('Download failed:', err);
+                alert('Failed to download the file from IPFS.');
+            }
+        }
+
+        async function copyHashToClipboard() {
+            const hash = document.getElementById('ipfsHash').textContent;
+            try {
+                await navigator.clipboard.writeText(hash);
+                showUploadStatus('IPFS hash copied to clipboard!', 'success');
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                showUploadStatus('Failed to copy hash', 'error');
+            }
+        }
+
+        // Marketplace Functions
         async function updateBalanceInfo() {
+            if (typeof web3 === 'undefined' || !web3.eth || !userAccount) {
+                console.warn("Web3 or account not ready yet.");
+                return;
+            }
+
             try {
                 const balanceWei = await web3.eth.getBalance(userAccount);
                 const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
-                
+
                 document.getElementById('balanceInfo').innerHTML = `
                     <strong>Wallet Balance:</strong> ${parseFloat(balanceEth).toFixed(4)} ETH
                 `;
@@ -440,6 +1131,7 @@
                 console.error('Failed to get balance:', error);
             }
         }
+        // ----------------- !!! Warning: Claudes cutoff !!! --------------------
 
         // Load products from smart contract
         async function loadProductsFromContract() {
@@ -468,6 +1160,7 @@
                     console.log(`Loaded ${products.length} products from contract`);
                 } else {
                     console.log('No products found, loading fallback products');
+                    clearStaticProducts();
                     loadFallbackProducts();
                 }
             } catch (error) {
@@ -479,7 +1172,8 @@
                 setTimeout(() => {
                     document.getElementById('purchaseStatus').classList.add('hidden');
                 }, 3000);
-                
+
+                clearStaticProducts();
                 loadFallbackProducts();
             }
         }
@@ -493,10 +1187,8 @@
         // Load fallback products if contract fails
         function loadFallbackProducts() {
             const fallbackProducts = [
-                {id: 1, name: "IoT Sensor Data Package", description: "Real-time temperature, humidity, and air quality data", price: "0.001"},
-                {id: 2, name: "Weather Analytics Dataset", description: "Historical weather patterns and forecasting data", price: "0.0005"},
-                {id: 3, name: "Traffic Flow Analysis", description: "Real-time traffic data and congestion patterns", price: "0.002"},
-                {id: 4, name: "Financial Market Data", description: "High-frequency trading data and market sentiment", price: "0.005"}
+                { id: 1, name: "Dummy data", description: "Absolutely Groundbreaking Vital Mission-Critical Data", price: "0.0001", ipfsHash: "QmSensorDataHash123"}
+                // { id: 1, name: "Dummy data", description: "Absolutely Groundbreaking Vital Mission-Critical Data", price: "0.0001", ipfsHash: "Haha, you got scammed xD"}
             ];
             
             fallbackProducts.forEach(product => {
@@ -554,7 +1246,7 @@
             
             try {
                 showStatus('purchaseStatus', 'Validating transaction...', 'info');
-                showDebugInfo('Starting purchase validation...');
+                // showDebugInfo('Starting purchase validation...');
                 
                 // Check current balance
                 const balanceWei = await web3.eth.getBalance(userAccount);
@@ -564,7 +1256,7 @@
                 debugInfo.balanceEth = balanceEth;
                 debugInfo.priceEth = priceEth;
                 
-                showDebugInfo(`Balance: ${balanceEth} ETH, Price: ${priceEth} ETH`);
+                // showDebugInfo(`Balance: ${balanceEth} ETH, Price: ${priceEth} ETH`);
                 
                 if (balanceEth < priceEth + 0.001) { // Adding small buffer for gas
                     showStatus('purchaseStatus', `Insufficient balance. Need: ${(priceEth + 0.001).toFixed(4)} ETH, Have: ${balanceEth.toFixed(4)} ETH`, 'error');
@@ -572,7 +1264,7 @@
                 }
                 
                 // Check if user already purchased this data
-                showDebugInfo('Checking purchase status...');
+                // showDebugInfo('Checking purchase status...');
                 const alreadyPurchased = await contract.methods.checkPurchaseStatus(userAccount, selectedData.productId).call();
                 
                 debugInfo.alreadyPurchased = alreadyPurchased;
@@ -596,19 +1288,19 @@
                     });
                     
                     debugInfo.gasEstimate = gasEstimate;
-                    showDebugInfo(`Gas estimate: ${gasEstimate}`);
+                    // showDebugInfo(`Gas estimate: ${gasEstimate}`);
                 } catch (gasError) {
                     console.error('Gas estimation failed:', gasError);
                     debugInfo.gasError = gasError.message;
-                    showDebugInfo(`Gas estimation failed: ${gasError.message}`);
+                    // showDebugInfo(`Gas estimation failed: ${gasError.message}`);
                     
                     // Try with a manual gas limit
                     gasEstimate = 300000;
-                    showDebugInfo('Using manual gas limit: 300000');
+                    // showDebugInfo('Using manual gas limit: 300000');
                 }
                 
                 showStatus('purchaseStatus', 'Initiating blockchain transaction...', 'info');
-                showDebugInfo('Sending transaction...');
+                // showDebugInfo('Sending transaction...');
                 
                 // Get current gas price
                 const gasPrice = await web3.eth.getGasPrice();
@@ -623,15 +1315,15 @@
                 };
                 
                 debugInfo.txParams = txParams;
-                showDebugInfo(`Transaction params: ${JSON.stringify(txParams, null, 2)}`);
+                // showDebugInfo(`Transaction params: ${JSON.stringify(txParams, null, 2)}`);
                 
                 const result = await contract.methods.purchaseData(selectedData.productId).send(txParams);
                 
                 debugInfo.txHash = result.transactionHash;
                 debugInfo.success = true;
                 
-                showStatus('purchaseStatus', '✅ Transaction successful! Data purchased.', 'success');
-                showDebugInfo(`Transaction successful: ${result.transactionHash}`);
+                showStatus('purchaseStatus', 'Data successfully purchased!', 'success');
+                // showDebugInfo(`Transaction successful: ${result.transactionHash}`);
                 
                 // Listen for the AccessTokenGenerated event to get the token
                 const events = await contract.getPastEvents('AccessTokenGenerated', {
@@ -639,18 +1331,30 @@
                     fromBlock: result.blockNumber,
                     toBlock: result.blockNumber
                 });
-                
+
+                fname = null;
                 if (events.length > 0) {
+                    fname = events[0].returnValues.productFname;
                     const accessToken = events[0].returnValues.token;
                     displayAccessToken(accessToken);
                 } else {
                     // Fallback: generate token format for display
+                    fname = "Filename.xxx";
                     const token = `dataex_${selectedData.productId}_${Date.now()}_${userAccount.substring(2, 8)}`;
                     displayAccessToken(token);
                 }
-                
+
+                // note: normally we would get the ipfs hash from some database using access Token
+                purchasedData = {
+                    // ipfsHash: getIpfsExternally(accessToken),
+                    ipfsHash: accessToken,  // we use ipfs hash as accessToken here
+                    filename: fname
+                };
+
                 // Update balance after purchase
                 await updateBalanceInfo();
+
+                // todo: shouldn't I remove the data from the list and update??
                 
             } catch (error) {
                 console.error('Purchase error:', error);
@@ -660,7 +1364,7 @@
                     data: error.data
                 };
                 
-                showDebugInfo(`Error: ${JSON.stringify(debugInfo.error, null, 2)}`);
+                // showDebugInfo(`Error: ${JSON.stringify(debugInfo.error, null, 2)}`);
                 
                 let errorMessage = 'Transaction failed';
                 
@@ -679,7 +1383,7 @@
                 showStatus('purchaseStatus', errorMessage, 'error');
             } finally {
                 // Always show debug info
-                showDebugInfo(`Debug info: ${JSON.stringify(debugInfo, null, 2)}`);
+                // showDebugInfo(`Debug info: ${JSON.stringify(debugInfo, null, 2)}`);
             }
         }
 
@@ -693,9 +1397,13 @@
         function displayAccessToken(token) {
             document.getElementById('accessToken').textContent = token;
             document.getElementById('accessSection').classList.remove('hidden');
+
+            hash = token;
+            document.getElementById('ipfsLink').href = `https://ipfs.io/ipfs/${hash}`;
+            document.getElementById('gatewayLink').href = `https://gateway.pinata.cloud/ipfs/${hash}`;
             
             // Add functionality to verify token
-            addTokenVerification(token);
+            // addTokenVerification(token);
         }
 
         async function addTokenVerification(token) {
@@ -740,6 +1448,21 @@
                 // Reload when network changes
                 location.reload();
             });
+        }
+
+        if (typeof contract !== 'undefined') {
+            contract.events.DataProductListed({
+                fromBlock: 'latest'
+            })
+                .on('data', function (event) {
+                    console.log("📦 New data product listed:", event.returnValues);
+
+                    // Refresh the UI (replace this with your actual logic)
+                    initializeMarketplace();
+                })
+                .on('error', function (error) {
+                    console.error("Error in DataProductListed event listener:", error);
+                });
         }
     </script>
     
