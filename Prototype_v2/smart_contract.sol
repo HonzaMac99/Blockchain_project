@@ -9,6 +9,7 @@ contract DataExchange {
     struct DataProduct {
         uint256 id;
         string name;
+        string filename;
         string description;
         uint256 price; // Price in wei
         address seller;
@@ -36,7 +37,7 @@ contract DataExchange {
     // Events
     event DataProductListed(uint256 indexed productId, string name, uint256 price, address seller);
     event DataPurchased(uint256 indexed productId, address indexed buyer, string accessToken, uint256 timestamp);
-    event AccessTokenGenerated(address indexed buyer, uint256 indexed productId, string token);
+    event AccessTokenGenerated(address indexed buyer, uint256 indexed productId, string productFname, string token);
     
     // Modifiers
     modifier onlyOwner() {
@@ -60,46 +61,27 @@ contract DataExchange {
     // Function to add sample products (for demo purposes)
     function _addSampleProducts() private {
         _listDataProduct(
-            "IoT Sensor Data Package",
-            "Real-time temperature, humidity, and air quality data from smart city sensors",
-            0.01 ether,
-            "QmSensorDataHash123"
-        );
-        
-        _listDataProduct(
-            "Weather Analytics Dataset",
-            "Historical weather patterns and forecasting data for major cities",
-            0.005 ether,
-            "QmWeatherDataHash456"
-        );
-        
-        _listDataProduct(
-            "Traffic Flow Analysis",
-            "Real-time traffic data and congestion patterns for urban planning",
-            0.02 ether,
-            "QmTrafficDataHash789"
-        );
-        
-        _listDataProduct(
-            "Financial Market Data",
-            "High-frequency trading data and market sentiment analysis",
-            0.05 ether,
-            "QmFinancialDataHash101"
+            "Dummy data",
+            "Dummy_file.json",
+            "Absolutely Groundbreaking Vital Mission-Critical Data - upload some data to remove this",
+            0.001 ether,
+            "Haha, you got scammed xD"
         );
     }
     
     // Internal function to list data products
     function _listDataProduct(
         string memory _name,
+        string memory _fname,
         string memory _description,
         uint256 _price,
         string memory _ipfsHash
     ) private {
-        tokenCounter++;
-        
-        dataProducts[tokenCounter] = DataProduct({
-            id: tokenCounter,
+
+        dataProducts[tokenCounter+1] = DataProduct({
+            id: tokenCounter+1,
             name: _name,
+            filename: _fname,
             description: _description,
             price: _price,
             seller: owner, // For demo, owner is the seller
@@ -108,16 +90,18 @@ contract DataExchange {
             totalSales: 0
         });
         
-        emit DataProductListed(tokenCounter, _name, _price, owner);
+        emit DataProductListed(tokenCounter+1, _name, _price, owner);
     }
     
     // Function for sellers to list new data products
     function listDataProduct(
         string memory _name,
+        string memory _fname,
         string memory _description,
         uint256 _price,
         string memory _ipfsHash
-    ) public {
+    // for now we just expect that only owner can sell the data
+    ) public onlyOwner {  
         require(bytes(_name).length > 0, "Name cannot be empty");
         require(bytes(_ipfsHash).length > 0, "IPFS hash cannot be empty");
         require(_price > 0, "Price must be greater than 0");
@@ -127,6 +111,7 @@ contract DataExchange {
         dataProducts[tokenCounter] = DataProduct({
             id: tokenCounter,
             name: _name,
+            filename: _fname,
             description: _description,
             price: _price,
             seller: msg.sender,
@@ -150,8 +135,11 @@ contract DataExchange {
         product.totalSales++;
         
         // Generate unique access token
-        string memory accessToken = _generateAccessToken(_productId, msg.sender);
-        
+        // string memory accessToken = _generateAccessToken(_productId, msg.sender);
+       
+        string memory accessToken = product.ipfsHash; // now we send the ipfs hash directly
+        string memory fname = product.filename;
+
         // Record the purchase
         purchases[tokenCounter] = Purchase({
             productId: _productId,
@@ -177,7 +165,7 @@ contract DataExchange {
         }
         
         emit DataPurchased(_productId, msg.sender, accessToken, block.timestamp);
-        emit AccessTokenGenerated(msg.sender, _productId, accessToken);
+        emit AccessTokenGenerated(msg.sender, _productId, fname, accessToken);
     }
     
     // Function to generate unique access token
@@ -221,6 +209,7 @@ contract DataExchange {
         DataProduct[] memory activeProducts = new DataProduct[](tokenCounter);
         uint256 activeCount = 0;
         
+        // filter only active products
         for (uint256 i = 1; i <= tokenCounter; i++) {
             if (dataProducts[i].isActive) {
                 activeProducts[activeCount] = dataProducts[i];
@@ -232,6 +221,7 @@ contract DataExchange {
         DataProduct[] memory result = new DataProduct[](activeCount);
         for (uint256 i = 0; i < activeCount; i++) {
             result[i] = activeProducts[i];
+            //result[i].ipfsHash = "";  // remove IPFS hash for safety
         }
         
         return result;
