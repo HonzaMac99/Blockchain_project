@@ -556,8 +556,8 @@
                 </div>
                 <div>
                     <strong>Access Links:</strong><br>
-                    <a id="ipfsLink" class="link-btn" target="_blank">View on IPFS</a>
-                    <a id="gatewayLink" class="link-btn" target="_blank">View on Gateway</a>
+                    <a id="ipfsLinkAccess" class="link-btn" target="_blank">View on IPFS</a>
+                    <a id="gatewayLinkAccess" class="link-btn" target="_blank">View on Gateway</a>
                     <!--<button class="link-btn" onclick="copyHashToClipboard()">Copy Hash</button>-->
                     <button class="download-btn" onclick="downloadFromIPFS()">Download</button>
                 </div>
@@ -1398,9 +1398,11 @@
             document.getElementById('accessToken').textContent = token;
             document.getElementById('accessSection').classList.remove('hidden');
 
-            hash = token;
-            document.getElementById('ipfsLink').href = `https://ipfs.io/ipfs/${hash}`;
-            document.getElementById('gatewayLink').href = `https://gateway.pinata.cloud/ipfs/${hash}`;
+            document.getElementById('ipfsLinkAccess').href = `https://ipfs.io/ipfs/${token}`;
+            document.getElementById('gatewayLinkAccess').href = `https://gateway.pinata.cloud/ipfs/${token}`;
+
+            // document.getElementById('ipfsLinkAccess').href = `https://ipfs.io/ipfs/${hash}`;
+            // document.getElementById('gatewayLinkAccess').href = `https://gateway.pinata.cloud/ipfs/${hash}`;
             
             // Add functionality to verify token
             // addTokenVerification(token);
