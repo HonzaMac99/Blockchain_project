@@ -951,7 +951,7 @@
                 showUploadSuccess(result.IpfsHash, 'Pinata');
 
                 uploadedData = {
-                    ipfsHash: result.IpfsHash,
+                    ipfsHash: result.IpfsHash.value || result.IpfsHash,
                     filename: selectedFile.name
                 }
 
@@ -1044,7 +1044,7 @@
         async function downloadFromIPFS_testing() {
             if (!uploadedData) return;
 
-            const ipfsHash = uploadedData.ipfsHash;
+            const ipfsHash = uploadedData.ipfsHash.value || uploadedData.ipfsHash;
             const filename = uploadedData.filename || 'downloaded-file';
             const gatewayUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
             console.log("download url: ", gatewayUrl);
@@ -1074,8 +1074,9 @@
         // custom function to download the selected data from ipfs
         async function downloadFromIPFS() {
             if (!purchasedData) return;
+            console.log("Purchased data: ", purchasedData);
 
-            const ipfsHash = purchasedData.ipfsHash;
+            const ipfsHash = purchasedData.ipfsHash.textContent || purchasedData.ipfsHash;
             const filename = purchasedData.filename || 'downloaded-file';
             const gatewayUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
             console.log("download url: ", gatewayUrl);
@@ -1347,7 +1348,7 @@
                 // note: normally we would get the ipfs hash from some database using access Token
                 purchasedData = {
                     // ipfsHash: getIpfsExternally(accessToken),
-                    ipfsHash: accessToken,  // we use ipfs hash as accessToken here
+                    ipfsHash: accessToken.value || accessToken,  // we use ipfs hash as accessToken here
                     filename: fname
                 };
 
