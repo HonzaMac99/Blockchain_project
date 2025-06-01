@@ -780,6 +780,24 @@
                 showStatus('authStatus', 'MetaMask not found. Please install MetaMask extension.', 'error');
             }
         }
+        
+        // Go back to the login page
+        function logout() {
+            // Hide all other pages
+            document.getElementById('uploadPage').classList.add('hidden');
+            document.getElementById('marketplacePage').classList.add('hidden');
+
+            // Show the authentication page
+            document.getElementById('authPage').classList.remove('hidden');
+
+            // Optionally clear other data if needed
+            // Keep contract address as-is, or clear it with:
+            // document.getElementById('contractAddress').value = '';
+
+            // Clear session-related UI elements (optional)
+            document.getElementById('authStatus').classList.add('hidden');
+            document.getElementById('authStatus').textContent = '';
+        }
 
         // Initialize upload page functionality
         function initializeUploadPage() {
