@@ -548,9 +548,14 @@
                 </div>
                 <div>
                     <strong>Access Links:</strong><br>
-                    <a id="ipfsLinkAccess" class="link-btn" href="#" target="_blank">View on IPFS</a>
+                    <!-- <a id="ipfsLinkAccess" class="link-btn" href="#" target="_blank">View on IPFS</a>
                     <a id="gatewayLinkAccess" class="link-btn" href="#" target="_blank">View on Gateway</a>
-                    <button id="downloadBtn" class="download-btn">Download</button>
+                    <button id="downloadBtn" class="download-btn">Download</button> -->
+
+                    <a id="ipfsLink" class="link-btn" target="_blank">View on IPFS</a>
+                    <a id="gatewayLink" class="link-btn" target="_blank">View on Gateway</a>
+                    <!--<button class="link-btn" onclick="copyHashToClipboard()">Copy Hash</button>-->
+                    <button class="download-btn" onclick="downloadFromIPFS_testing()">Download</button>
                 </div>
                 <div style="margin-top: 15px;">
                     <small style="color: #666;">
@@ -1393,27 +1398,27 @@
                 
             } catch (error) {
                 console.error('Purchase error:', error);
-                debugInfo.error = {
-                    message: error.message,
-                    code: error.code,
-                    data: error.data
-                };
+                // debugInfo.error = {
+                //     message: error.message,
+                //     code: error.code,
+                //     data: error.data
+                // };
                 
-                let errorMessage = 'Transaction failed';
+                // let errorMessage = 'Transaction failed';
                 
-                if (error.code === 4001) {
-                    errorMessage = 'Transaction cancelled by user';
-                } else if (error.message.includes('insufficient funds')) {
-                    errorMessage = 'Insufficient funds for transaction + gas fees';
-                } else if (error.message.includes('Already purchased')) {
-                    errorMessage = 'You have already purchased this data';
-                } else if (error.message.includes('reverted')) {
-                    errorMessage = 'Transaction reverted - check contract conditions';
-                } else if (error.data && error.data.message) {
-                    errorMessage = error.data.message;
-                }
+                // if (error.code === 4001) {
+                //     errorMessage = 'Transaction cancelled by user';
+                // } else if (error.message.includes('insufficient funds')) {
+                //     errorMessage = 'Insufficient funds for transaction + gas fees';
+                // } else if (error.message.includes('Already purchased')) {
+                //     errorMessage = 'You have already purchased this data';
+                // } else if (error.message.includes('reverted')) {
+                //     errorMessage = 'Transaction reverted - check contract conditions';
+                // } else if (error.data && error.data.message) {
+                //     errorMessage = error.data.message;
+                // }
                 
-                showStatus('purchaseStatus', errorMessage, 'error');
+                // showStatus('purchaseStatus', errorMessage, 'error');
             }
         }
 
